@@ -1,0 +1,2 @@
+# Demand-Forecasting-in-E-Commerce-Using-Machine-Learning
+Demand forecasting is essential for making decisions to make a store more competitive. A store can lose money because it has an excessive stock of a certain product, or failing to sell a certain product due to lack of stock. Due to the number of factors that can influence this forecast, it is necessary to use machine learning to increase accuracy. The project aims to forecast demand for an e-commerce, testing various machine learning algorithms.

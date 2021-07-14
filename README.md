@@ -19,6 +19,9 @@ hdfs dfs -mkdir /user/hadoop
 hdfs dfs -mkdir /user/daniel
 hdfs dfs -chown daniel /user/daniel
 
+# with user daniel
+hdfs dfs -mkdir /user/daniel/dataset
+
 ```
 
 [hdfs](http://localhost:9870/)

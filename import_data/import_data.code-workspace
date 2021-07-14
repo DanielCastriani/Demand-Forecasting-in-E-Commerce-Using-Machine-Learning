@@ -18,6 +18,10 @@
 		"python.analysis.typeCheckingMode": "off",
 		"jupyter.sendSelectionToInteractiveWindow": true,
 		"jupyter.notebookFileRoot": "${workspaceFolder}",
+		"files.exclude": {
+			"**/__pycache__": true,
+			"**/.venv": true
+		},
 	},
 	"extensions": {
 		"recommendations": [

@@ -1,18 +1,23 @@
 # Demand-Forecasting-in-E-Commerce-Using-Machine-Learning
 Demand forecasting is essential for making decisions to make a store more competitive. A store can lose money because it has an excessive stock of a certain product, or failing to sell a certain product due to lack of stock. Due to the number of factors that can influence this forecast, it is necessary to use machine learning to increase accuracy. The project aims to forecast demand for an e-commerce, testing various machine learning algorithms.
 
-# Initialize Hadoop
-
-
-## Install Hadoop
+# Install Hadoop
 * [0 - Prepare Environment](./doc/0_prepare_environment.md)
 * [1 - Install Hadoop](./doc/1_install_hadoop.md)
 * [2 - Install Spark](./doc/2_install_spark.md)
 
+# Initialize Hadoop
 
-```bash
+```
 start-dfs.sh
 start-yarn.sh
+/opt/spark/sbin/start-master.sh
+/opt/spark/sbin/start-slave.sh spark://127.0.1.1:7077
+```
+
+# Create folders
+
+```bash
 
 hdfs dfs -mkdir /user
 hdfs dfs -mkdir /user/hadoop
@@ -27,6 +32,8 @@ hdfs dfs -mkdir /user/daniel/dataset
 [hdfs](http://localhost:9870/)
 
 [yarn](http://localhost:8088/)
+
+[spark](http://localhost:8080/)
 
 
 ## Datasets

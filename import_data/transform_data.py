@@ -1,3 +1,4 @@
+from utils.feature_engineering_utils import group_order_items
 from schemas import order_item_schema, order_schema, customer_schema, product_schema, seller_schema
 from pyspark import SparkContext
 from pyspark.sql import SparkSession
@@ -18,3 +19,5 @@ orders = spark.read.csv(file_path.format('olist_orders_dataset.csv'), header=Tru
 order_items = spark.read.csv(file_path.format('olist_order_items_dataset.csv'), header=True, schema=order_item_schema)
 products = spark.read.csv(file_path.format('olist_products_dataset.csv'), header=True, schema=product_schema)
 sellers = spark.read.csv(file_path.format('olist_sellers_dataset.csv'), header=True, schema=seller_schema)
+
+order_items = group_order_items(order_items)

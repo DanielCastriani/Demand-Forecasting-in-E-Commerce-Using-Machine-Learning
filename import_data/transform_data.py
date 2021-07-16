@@ -29,5 +29,29 @@ orders = calc_order_data_feature(orders)
 
 dataset = merge_data(customers, orders, order_items, products, sellers)
 
+dataset = dataset.dropna(subset=[
+    'product_category_name',
+    'product_name_lenght',
+    'product_description_lenght',
+    'product_photos_qty',
+    'product_weight_g',
+    'product_length_cm',
+    'product_height_cm',
+    'product_width_cm',
+])
 
-dataset.limit(5).toPandas().head()
+dataset.where(dataset.days_to_deliver == 0).toPandas()
+
+dataset = dataset.fillna(-1, subset=[
+    'days_to_approve',
+    'days_to_post',
+    'days_to_deliver',
+    'estimated_delivered_diff',
+])
+
+dataset = dataset.fillna(False, subset=['is_delayed'])
+
+
+pd_df = dataset.toPandas()
+
+pd_df.isna().sum()

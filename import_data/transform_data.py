@@ -1,8 +1,11 @@
+import pandas as pd
 from pyspark import SparkContext
 from pyspark.sql import SparkSession
 
 from schemas import customer_schema, order_item_schema, order_schema, product_schema, seller_schema
-from utils.feature_engineering_utils import calc_order_data_feature, filter_order, group_order_items
+from utils.feature_engineering_utils import calc_order_data_feature, filter_order, group_order_items, merge_data
+
+pd.set_option('display.max_columns', None)
 
 master = 'spark://127.0.1.1:7077'
 appName = 'Transform Data'
@@ -21,11 +24,10 @@ sellers = spark.read.csv(file_path.format('olist_sellers_dataset.csv'), header=T
 order_items = group_order_items(order_items)
 
 orders = filter_order(orders)
+
 orders = calc_order_data_feature(orders)
 
-dataset = orders.join(order_items, on=['order_id'])
-dataset = dataset.join(products, on=['product_id'])
-dataset = dataset.join(customers, on=['customer_id'])
-dataset = dataset.join(sellers, on=['seller_id'])
+dataset = merge_data(customers, orders, order_items, products, sellers)
+
 
 dataset.limit(5).toPandas().head()

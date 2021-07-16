@@ -48,4 +48,14 @@ def calc_order_data_feature(orders: DataFrame):
 
 def filter_order(orders: DataFrame):
     orders = orders.where(~orders.order_status.isin(['canceled', 'unavailable']))
+    
     return orders
+
+
+def merge_data(customers: DataFrame, orders: DataFrame, order_items: DataFrame, products: DataFrame, sellers: DataFrame):
+    dataset = orders.join(order_items, on=['order_id'])
+    dataset = dataset.join(products, on=['product_id'])
+    dataset = dataset.join(customers, on=['customer_id'])
+    dataset = dataset.join(sellers, on=['seller_id'])
+
+    return dataset

@@ -1,25 +1,22 @@
-import pandas as pd
 from pyspark import SparkContext
 from pyspark.sql import SparkSession
 
 from schemas import customer_schema, order_item_schema, order_schema, product_schema, seller_schema
 from utils.feature_engineering_utils import calc_order_data_feature, filter_order, group_order_items, merge_data
 
-pd.set_option('display.max_columns', None)
-
 master = 'spark://127.0.1.1:7077'
 appName = 'Transform Data'
-file_path = 'hdfs://localhost:9000/user/daniel/dataset/{}'
+hdfs_dataset_path = 'hdfs://localhost:9000/user/daniel/dataset/{}'
 
 sc = SparkContext(master=master, appName=appName)
 spark = SparkSession.builder.appName(appName).master(master).getOrCreate()
 
 
-customers = spark.read.csv(file_path.format('olist_customers_dataset.csv'), header=True, schema=customer_schema)
-orders = spark.read.csv(file_path.format('olist_orders_dataset.csv'), header=True, schema=order_schema)
-order_items = spark.read.csv(file_path.format('olist_order_items_dataset.csv'), header=True, schema=order_item_schema)
-products = spark.read.csv(file_path.format('olist_products_dataset.csv'), header=True, schema=product_schema)
-sellers = spark.read.csv(file_path.format('olist_sellers_dataset.csv'), header=True, schema=seller_schema)
+customers = spark.read.csv(hdfs_dataset_path.format('olist_customers_dataset.csv'), header=True, schema=customer_schema)
+orders = spark.read.csv(hdfs_dataset_path.format('olist_orders_dataset.csv'), header=True, schema=order_schema)
+order_items = spark.read.csv(hdfs_dataset_path.format('olist_order_items_dataset.csv'), header=True, schema=order_item_schema)
+products = spark.read.csv(hdfs_dataset_path.format('olist_products_dataset.csv'), header=True, schema=product_schema)
+sellers = spark.read.csv(hdfs_dataset_path.format('olist_sellers_dataset.csv'), header=True, schema=seller_schema)
 
 order_items = group_order_items(order_items)
 
@@ -51,7 +48,4 @@ dataset = dataset.fillna(-1, subset=[
 
 dataset = dataset.fillna(False, subset=['is_delayed'])
 
-
-pd_df = dataset.toPandas()
-
-pd_df.isna().sum()
+dataset.write.parquet(hdfs_dataset_path.format('dataset.parquet'))

@@ -4,9 +4,9 @@ from pyspark.sql import SparkSession
 from schemas import customer_schema, order_item_schema, order_schema, product_schema, seller_schema
 from utils.feature_engineering_utils import calc_order_data_feature, filter_order, group_order_items, merge_data
 
-master = 'spark://127.0.1.1:7077'
+master = 'spark://192.168.2.100:7077'
 appName = 'Transform Data'
-hdfs_dataset_path = 'hdfs://localhost:9000/user/daniel/dataset/{}'
+hdfs_dataset_path = 'hdfs://192.168.2.100:9000/user/daniel/dataset/{}'
 
 sc = SparkContext(master=master, appName=appName)
 spark = SparkSession.builder.appName(appName).master(master).getOrCreate()

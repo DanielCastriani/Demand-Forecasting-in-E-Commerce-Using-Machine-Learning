@@ -1,7 +1,7 @@
 from pyspark import SparkContext
 from pyspark.sql import SparkSession
 
-from schemas import customer_schema, order_item_schema, order_schema, product_schema, seller_schema
+from schemas import customer_schema, dollar_schema, ipca_schema, order_item_schema, order_schema, product_schema, seller_schema
 from utils.feature_engineering_utils import calc_order_data_feature, filter_order, group_order_items, merge_data
 
 master = 'spark://192.168.2.100:7077'
@@ -18,13 +18,17 @@ order_items = spark.read.csv(hdfs_dataset_path.format('olist_order_items_dataset
 products = spark.read.csv(hdfs_dataset_path.format('olist_products_dataset.csv'), header=True, schema=product_schema)
 sellers = spark.read.csv(hdfs_dataset_path.format('olist_sellers_dataset.csv'), header=True, schema=seller_schema)
 
+ipca = spark.read.csv(hdfs_dataset_path.format('ipca.csv'), header=True, schema=ipca_schema)
+dollar = spark.read.csv(hdfs_dataset_path.format('dollar.csv'), header=True, schema=dollar_schema)
+
+
 order_items = group_order_items(order_items)
 
 orders = filter_order(orders)
 
 orders = calc_order_data_feature(orders)
 
-dataset = merge_data(customers, orders, order_items, products, sellers)
+dataset = merge_data(customers, orders, order_items, products, sellers, ipca, dollar)
 
 dataset = dataset.dropna(subset=[
     'product_category_name',
@@ -48,4 +52,5 @@ dataset = dataset.fillna(-1, subset=[
 
 dataset = dataset.fillna(False, subset=['is_delayed'])
 
-dataset.write.parquet(hdfs_dataset_path.format('dataset.parquet'))
+dataset.repartition(1).write.mode('overwrite').parquet(hdfs_dataset_path.format('dataset.parquet'))
+dataset.repartition(1).write.mode('overwrite').csv(hdfs_dataset_path.format('dataset.csv'))

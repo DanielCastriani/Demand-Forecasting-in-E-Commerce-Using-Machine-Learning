@@ -12,7 +12,7 @@ Demand forecasting is essential for making decisions to make a store more compet
 start-dfs.sh
 start-yarn.sh
 /opt/spark/sbin/start-master.sh
-/opt/spark/sbin/start-slave.sh spark://127.0.1.1:7077
+/opt/spark/sbin/start-slave.sh spark://192.168.2.100:7077
 ```
 
 # Create folders

@@ -1,6 +1,5 @@
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
-from pyspark.sql.types import IntegerType
 
 
 def group_order_items(order_items: DataFrame):
@@ -48,14 +47,28 @@ def calc_order_data_feature(orders: DataFrame):
 
 def filter_order(orders: DataFrame):
     orders = orders.where(~orders.order_status.isin(['canceled', 'unavailable']))
-    
+
     return orders
 
 
-def merge_data(customers: DataFrame, orders: DataFrame, order_items: DataFrame, products: DataFrame, sellers: DataFrame):
+def merge_data(
+        customers: DataFrame,
+        orders: DataFrame,
+        order_items: DataFrame,
+        products: DataFrame,
+        sellers: DataFrame,
+        ipca: DataFrame,
+        dollar: DataFrame):
+
     dataset = orders.join(order_items, on=['order_id'])
     dataset = dataset.join(products, on=['product_id'])
     dataset = dataset.join(customers, on=['customer_id'])
     dataset = dataset.join(sellers, on=['seller_id'])
+    dataset = dataset.join(dollar, on=['date'])
+
+    dataset = dataset.withColumn('y', F.year(dataset.date))
+    dataset = dataset.withColumn('m', F.month(dataset.date))
+
+    dataset = dataset.join(ipca, on=['y', 'm'])
 
     return dataset

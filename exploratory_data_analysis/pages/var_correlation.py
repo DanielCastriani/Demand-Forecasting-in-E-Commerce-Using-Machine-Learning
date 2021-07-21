@@ -1,4 +1,4 @@
-from components.slide import Slider
+from components.slider import Slider
 import dash_core_components as dcc
 import dash_html_components as html
 

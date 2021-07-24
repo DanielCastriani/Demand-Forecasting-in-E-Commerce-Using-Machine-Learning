@@ -5,5 +5,5 @@ import dash_html_components as html
 from app import app
 
 layout = html.Div([
-    Slider(id='slider', value=30, min=5, max=120)
+    # Slider(id='slider', value=30, min=5, max=120)
 ])

@@ -5,6 +5,6 @@ from dash.dependencies import Input, Output
 from app import app
 
 layout = html.Div([
-    html.Link('Correlação entre Variáveis', href='/var_correlation'),
+    # html.Link('Correlação entre Variáveis', href='/var_correlation'),
 ])
 

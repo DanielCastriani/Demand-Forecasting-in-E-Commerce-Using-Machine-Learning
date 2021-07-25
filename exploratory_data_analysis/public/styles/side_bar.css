@@ -8,6 +8,14 @@
     height: 100%;
     width: 275px;
     padding: 16px 0;
+
+    overflow: hidden;
+    transition: width 300ms ease-out;
+}
+
+.hide-side-menu {
+    transition: width 300ms ease-out;
+    width: 0 !important;
 }
 
 .menu-list {
@@ -20,6 +28,11 @@
     width: 100%;
     text-decoration: none;
     color: #fff;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
 }
 
 .menu-item:hover {
@@ -28,7 +41,6 @@
     cursor: pointer;
 }
 
-
 .menu-active {
-    border-left: 2px solid #FFF;
+    border-left: 2px solid #fff;
 }

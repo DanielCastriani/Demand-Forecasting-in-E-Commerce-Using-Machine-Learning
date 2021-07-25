@@ -22,3 +22,27 @@ body {
 .content {
     padding: 16px;
 }
+
+.white-icon path {
+    fill: #fff;
+    padding: 4px;
+}
+
+.fab {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 90px;
+    min-height: 28px;
+    min-width: 28px;
+}
+
+.fab:hover {
+    cursor: pointer;
+    background-color: rgba(255, 255, 255, 0.25);
+}
+
+.title {
+    margin-left: 16px;
+}

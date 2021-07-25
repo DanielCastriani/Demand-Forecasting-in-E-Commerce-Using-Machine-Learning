@@ -15,7 +15,7 @@
 
 .hide-side-menu {
     transition: width 300ms ease-out;
-    width: 0 !important;
+    width: 48px !important;
 }
 
 .menu-list {
@@ -30,7 +30,7 @@
     color: #fff;
 
     overflow: hidden;
-    text-overflow: ellipsis;
+    text-overflow: none;
     white-space: nowrap;
 
 }

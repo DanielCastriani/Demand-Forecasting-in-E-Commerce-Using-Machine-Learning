@@ -8,4 +8,9 @@ def MenuItem(route: Route):
     if route.get('is_active', False):
         className.append('menu-active')
 
-    return html.A(route['title'], href=route['url'], className=' '.join(className))
+    icon = route.get('icon', 'fa-bars')
+
+    return html.A([
+        html.I(className=f'fas {icon}', style={'marginRight': '16px'}),
+        route['title']
+    ], href=route['url'], className=' '.join(className))

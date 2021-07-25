@@ -8,3 +8,4 @@ class Route(TypedDict):
     app: Component
     is_active: Optional[bool]
     show_menu: bool
+    icon: Optional[str]

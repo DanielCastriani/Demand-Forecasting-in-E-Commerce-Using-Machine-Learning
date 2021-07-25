@@ -12,12 +12,11 @@ from app import app
 
 app.layout = html.Div([
     dcc.Location(id='url', refresh=False),
+
     TopBar(),
-    SideBar(),
+    html.Div([], id='side-bar', className='side-bar-container'),
 
     html.Div(id='page-content', className='content'),
-    
-    
 ], className='main-container')
 
 
@@ -27,15 +26,22 @@ def static_files(path):
     return send_from_directory(static_folder, path)
 
 
-@app.callback(Output('page-content', 'children'),
-              Input('url', 'pathname'))
+@app.callback([
+    Output('side-bar', 'children'),
+    Output('page-content', 'children'),
+],
+    Input('url', 'pathname'))
 def display_page(pathname):
     route = next((c for c in main_routes if c['url'] == pathname), None)
 
+    side_menu_path = [{**m, 'is_active': True} if m['url'] == pathname else m for m in main_routes]
+
+    side_menu = SideBar(side_menu_path)
+
     if route:
-        return route['app']
+        return side_menu, route['app']
     else:
-        return '404'
+        return side_menu, '404'
 
 
 if __name__ == '__main__':

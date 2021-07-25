@@ -15,13 +15,17 @@ app.layout = html.Div([
     dcc.Location(id='url', refresh=False),
 
     TopBar(),
-    html.Div([], id='side-bar', className='side-bar-container hide-side-menu'),
 
-    html.Div(id='page-content', className='content'),
+    html.Div([
+        html.Div([], id='side-bar-menu', className='side-bar-menu-container hide-side-menu'),
+        html.Div(id='page-content', className='content'),
+
+    ], className='content-container'),
+
 ], className='main-container')
 
 
-@app.callback(Output('side-bar', 'className'), [Input('side-bar', 'className'), Input('menu-button', 'n_clicks')])
+@app.callback(Output('side-bar-menu', 'className'), [Input('side-bar-menu', 'className'), Input('menu-button', 'n_clicks')])
 def toggle_menu(className: str, n_clicks):
     class_list = className.split(' ')
 
@@ -42,7 +46,7 @@ def static_files(path: str):
     return send_from_directory(static_folder, path)
 
 
-@app.callback([Output('side-bar', 'children'), Output('page-content', 'children')], Input('url', 'pathname'))
+@app.callback([Output('side-bar-menu', 'children'), Output('page-content', 'children')], Input('url', 'pathname'))
 def display_page(pathname):
     route = next((c for c in main_routes if c['url'] == pathname), None)
 

@@ -4,7 +4,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 import numpy as np
 from dash.development.base_component import Component
-from typehint.datetype import Number
+from typehint.datatype import Number
 
 
 def Slider(

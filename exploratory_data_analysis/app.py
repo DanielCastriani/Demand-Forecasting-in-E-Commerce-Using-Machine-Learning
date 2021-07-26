@@ -1,7 +1,10 @@
 import dash
 
+
+
 external_stylesheets = [
     'https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css',
+    '/public/styles/theme.css',
     '/public/styles/menu.css',
     '/public/styles/base_style.css',
     '/public/styles/side_bar.css',

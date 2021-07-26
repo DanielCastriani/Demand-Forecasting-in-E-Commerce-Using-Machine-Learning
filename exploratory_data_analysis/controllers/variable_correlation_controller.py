@@ -18,5 +18,14 @@ def feature_correlation(agg_mode: AggregationMode, feature: str):
 
     numeric_columns = load_numeric_column_names()
 
-    return sales_df[numeric_columns].corr().loc[feature]
+    features_corr: pd.DataFrame =  sales_df[numeric_columns].corr().loc[[feature]]
+
+    features_corr = features_corr.drop(columns=[feature])
+
+    features_corr = features_corr.T
+
+    features_corr = features_corr.reset_index()
+    features_corr = features_corr.rename(columns={'index': 'features'})
+
+    return features_corr
 

@@ -10,4 +10,4 @@ def FilterContainer(children: Union[Component, List[Component]]):
 
 def Content(children: Union[Component]):
 
-    return html.Div(children, className='padding-container')
+    return html.Div(children, className='padding-container', style={'width': '100%'})

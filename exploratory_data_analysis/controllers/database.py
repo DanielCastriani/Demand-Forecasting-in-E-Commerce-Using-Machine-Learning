@@ -1,11 +1,21 @@
 import pandas as pd
 
+url = 'hdfs://hadoop:9000/user/daniel/dataset'
+
 
 def load_database():
-    dataset_path = 'hdfs://192.168.2.100:9000/user/daniel/dataset/dataset.parquet'
+    dataset_path = f'{url}/dataset.parquet'
     df = pd.read_parquet(dataset_path)
 
     df['date'] = pd.to_datetime(df['date'])
+
+    return df
+
+
+def load_category():
+
+    dataset_path = f'{url}/subcategories.parquet'
+    df = pd.read_parquet(dataset_path)
 
     return df
 

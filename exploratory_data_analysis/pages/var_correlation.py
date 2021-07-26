@@ -38,7 +38,7 @@ def update_figure(agg_mode: str, feature: str):
 
 layout = html.Div([
     FilterContainer([
-        Dropdown(id=f'{pg_id}-agg-mode', label='Agregar por', value=agg_date_mode_list[0]['value'], options=agg_date_mode_list),
+        Dropdown(id=f'{pg_id}-agg-mode', label='Agregar por', value=agg_date_mode_list[2]['value'], options=agg_date_mode_list),
         Dropdown(id=f'{pg_id}-variable', label='Variável', value=numeric_columns[0]['value'], options=numeric_columns),
     ]),
 

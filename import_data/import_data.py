@@ -25,6 +25,7 @@ dollar_path = os.path.join(file_path_folder, 'dollar.csv')
 ipca.to_csv(ipca_path, index=False)
 dollar.to_csv(dollar_path, index=False)
 
+run_cmd(["hdfs", "dfs", "-mkdir", 'dataset'])
 
 for filename in filename_list:
 

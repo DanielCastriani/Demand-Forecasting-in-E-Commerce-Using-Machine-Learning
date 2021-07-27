@@ -21,7 +21,7 @@ sudo chmod 0600 ~/.ssh/authorized_keys
 
 ```
 
-code vim /etc/ssh/sshd_config
+sudo vim /etc/ssh/sshd_config
 ```txt
 Port 22
 AddressFamily any
@@ -34,7 +34,7 @@ sudo systemctl status sshd
 ```
 
 
-sudo code ~/.bashrc
+sudo vim ~/.bashrc
 ```bashrc
 # Java
 export JAVA_HOME=/opt/jdk
@@ -52,6 +52,16 @@ cd ~/Downloads
 
 su hadoop
 ```
+
+# Hosts
+
+sudo vim /etc/hosts
+
+```txt
+# add
+192.168.2.100   hadoop
+``` 
+
 
 # Install Hadoop
 

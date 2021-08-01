@@ -38,9 +38,8 @@ def feature_correlation(agg_mode: AggregationMode, feature: str, category: str):
 def lag_correlation(agg_mode: AggregationMode, feature_column: str, lag_feature_column: str, category: str, window: int):
     sales_df = load_database()
     sales_df = filter_df(sales_df, 'product_category_name', category)
-    
-    sales_df = sales_df[set(['date', *keys, feature_column, lag_feature_column])]
 
+    sales_df = sales_df[set(['date', *keys, feature_column, lag_feature_column])]
 
     if feature_column == lag_feature_column:
         sales_df[f'{feature_column}(A)'] = sales_df[feature_column]
@@ -68,17 +67,21 @@ def lag_correlation(agg_mode: AggregationMode, feature_column: str, lag_feature_
     return corr.rename(columns={'index': lag_feature_column})
 
 
-def mean_by_cat_date(agg_mode: AggregationMode, feature_column: str):
+def mean_by_cat_date(agg_mode: AggregationMode, feature_column: str, category: str, is_compare: bool):
     sales_df = load_database()
+
+    sales_df = filter_df(sales_df, 'product_category_name', category)
+
     sales_df = sales_df.sort_values('date')
 
     agg_keys = [
         'product_category_name'
-    ]
+    ] if is_compare else []
 
     sales_df = sales_df[[*agg_keys, 'date', feature_column]]
+    agg_func = 'sum' if feature_column == 'qty' else 'mean'
 
-    sales_df = aggregate(sales_df, agg_mode, agg_keys, agg_func='mean', date_col='date')
+    sales_df = aggregate(sales_df, agg_mode, agg_keys, agg_func=agg_func, date_col='date')
 
     sales_df = join_date(sales_df, agg_mode)
 

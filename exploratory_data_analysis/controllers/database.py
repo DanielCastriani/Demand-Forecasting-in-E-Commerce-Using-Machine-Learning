@@ -16,6 +16,7 @@ def load_category():
 
     dataset_path = f'{url}/categories.parquet'
     df = pd.read_parquet(dataset_path)
+    df = df.sort_values('product_category_name')
 
     return df
 

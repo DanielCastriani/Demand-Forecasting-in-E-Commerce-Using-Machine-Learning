@@ -1,3 +1,4 @@
+from utils.filter_utils import filter_df
 from utils.lag_feature import lag_columns, lag_feature
 from utils.aggrecation_utils import aggregate
 from typehint.datatype import AggregationMode
@@ -13,8 +14,9 @@ keys = [
 ]
 
 
-def feature_correlation(agg_mode: AggregationMode, feature: str):
+def feature_correlation(agg_mode: AggregationMode, feature: str, category: str):
     sales_df = load_database()
+    sales_df = filter_df(sales_df, 'product_category_name', category)
 
     sales_df = aggregate(sales_df, agg_mode, keys, agg_func='mean', date_col='date')
 
@@ -32,17 +34,19 @@ def feature_correlation(agg_mode: AggregationMode, feature: str):
     return features_corr
 
 
-def lag_correlation(agg_mode: AggregationMode, feature_column: str, lag_feature_column: str, window: int):
+def lag_correlation(agg_mode: AggregationMode, feature_column: str, lag_feature_column: str, category: str, window: int):
     sales_df = load_database()
+    sales_df = filter_df(sales_df, 'product_category_name', category)
+    
     sales_df = sales_df[set(['date', *keys, feature_column, lag_feature_column])]
+
 
     if feature_column == lag_feature_column:
         sales_df[f'{feature_column}(A)'] = sales_df[feature_column]
         sales_df[f'{lag_feature_column}(B)'] = sales_df[lag_feature_column]
-        
+
         feature_column = f'{feature_column}(A)'
         lag_feature_column = f'{lag_feature_column}(B)'
-
 
     sales_df = sales_df.sort_values('date')
 

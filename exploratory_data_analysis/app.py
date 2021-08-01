@@ -1,5 +1,5 @@
+from controllers.database import load_category
 import dash
-
 
 
 external_stylesheets = [
@@ -26,5 +26,7 @@ app = dash.Dash(
     suppress_callback_exceptions=True,
 )
 
+categories = load_category()
+categories = categories['product_category_name'].tolist()
 
 server = app.server

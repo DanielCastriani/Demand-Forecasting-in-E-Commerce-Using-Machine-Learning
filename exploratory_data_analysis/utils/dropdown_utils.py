@@ -2,8 +2,13 @@ from typing import List
 from typehint import ListItem
 
 
-def generate_list(values: List[str]):
-    return [ListItem(value=x, label=x.replace('_', ' ').capitalize()) for x in values]
+def generate_list_items(values: List[str], add_all: bool = False):
+    arr = [ListItem(value=x, label=str(x).replace('_', ' ').capitalize()) for x in values]
+
+    if add_all:
+        return[ListItem(value=-1, label='Todos'), *arr]
+
+    return arr
 
 
 def agg_mode_list():

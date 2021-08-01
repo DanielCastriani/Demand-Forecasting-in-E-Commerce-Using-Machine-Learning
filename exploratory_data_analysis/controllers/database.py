@@ -14,7 +14,7 @@ def load_database():
 
 def load_category():
 
-    dataset_path = f'{url}/subcategories.parquet'
+    dataset_path = f'{url}/categories.parquet'
     df = pd.read_parquet(dataset_path)
 
     return df

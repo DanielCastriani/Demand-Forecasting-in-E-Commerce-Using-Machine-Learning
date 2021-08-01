@@ -16,7 +16,7 @@ sudo chown hadoop:hadoop -R /opt/hadoop
 
 # Config
 
-code /opt/hadoop/etc/hadoop/core-site.xml
+vim /opt/hadoop/etc/hadoop/core-site.xml
 ```xml
 <configuration>
   <property>
@@ -26,7 +26,7 @@ code /opt/hadoop/etc/hadoop/core-site.xml
 </configuration>
 ```
 
-code /opt/hadoop/etc/hadoop/hdfs-site.xml
+vim /opt/hadoop/etc/hadoop/hdfs-site.xml
 ```xml
 <configuration>
   <property>
@@ -45,12 +45,12 @@ code /opt/hadoop/etc/hadoop/hdfs-site.xml
 ```
 
 
-code /opt/hadoop/etc/hadoop/hadoop-env.sh
+vim /opt/hadoop/etc/hadoop/hadoop-env.sh
 ```sh
 export JAVA_HOME=/opt/jdk
 ```
 
-code ~/.bashrc
+vim ~/.bashrc
 
 ```bashrc
 # Hadoop

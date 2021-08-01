@@ -1,6 +1,7 @@
 from utils.filter_utils import filter_df
+from utils.normalizer import normalize
 from utils.lag_feature import lag_columns, lag_feature
-from utils.aggrecation_utils import aggregate
+from utils.aggrecation_utils import aggregate, join_date
 from typehint.datatype import AggregationMode
 from controllers.database import load_database, load_numeric_column_names
 import pandas as pd
@@ -65,3 +66,34 @@ def lag_correlation(agg_mode: AggregationMode, feature_column: str, lag_feature_
     corr: pd.DataFrame = corr[[feature_column]].iloc[: -1].reset_index()
 
     return corr.rename(columns={'index': lag_feature_column})
+
+
+def mean_by_cat_date(agg_mode: AggregationMode, feature_column: str):
+    sales_df = load_database()
+    sales_df = sales_df.sort_values('date')
+
+    agg_keys = [
+        'product_category_name'
+    ]
+
+    sales_df = sales_df[[*agg_keys, 'date', feature_column]]
+
+    sales_df = aggregate(sales_df, agg_mode, agg_keys, agg_func='mean', date_col='date')
+
+    sales_df = join_date(sales_df, agg_mode)
+
+    return sales_df
+
+
+def ext_data_x_feature(agg_mode: AggregationMode, feature_column: str, norm: bool):
+    sales_df = load_database()
+    columns = ['date', * keys, feature_column, 'dollar', 'ipca']
+
+    sales_df = sales_df[columns]
+
+    sales_df = aggregate(sales_df, agg_mode, keys, agg_func='mean', date_col='date')
+
+    if norm:
+        sales_df = normalize(sales_df, columns=[feature_column, 'dollar', 'ipca'])
+
+    return sales_df

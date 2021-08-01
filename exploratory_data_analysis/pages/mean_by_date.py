@@ -1,22 +1,20 @@
-from controllers.database import load_numeric_column_names
-from components.dropdown import Dropdown
-from controllers.variable_correlation_controller import mean_by_cat_date
 import dash_core_components as dcc
 import dash_html_components as html
+import plotly.graph_objects as go
 from app import app
 from components.containers import Content, FilterContainer
+from components.dropdown import Dropdown
+from controllers.database import load_numeric_column_names
+from controllers.variable_correlation_controller import mean_by_cat_date
 from dash.dependencies import Input, Output
-import plotly.graph_objects as go
-
-
-from utils.dropdown_utils import agg_mode_list, generate_list
+from utils.dropdown_utils import agg_mode_list, generate_list_items
 
 pg_id = 'external-data'
 
 
 agg_date_mode_list = agg_mode_list()
 
-numeric_columns = generate_list(load_numeric_column_names())
+numeric_columns = generate_list_items(load_numeric_column_names())
 
 
 @app.callback(

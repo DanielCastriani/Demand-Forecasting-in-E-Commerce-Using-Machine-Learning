@@ -1,15 +1,14 @@
-from controllers.variable_correlation_controller import feature_correlation, lag_correlation
 import dash_core_components as dcc
 import dash_html_components as html
+import plotly.express as px
 from app import app, categories
 from components.containers import Content, FilterContainer
 from components.dropdown import Dropdown
-from controllers.database import load_numeric_column_names
-from dash.dependencies import Input, Output
-from utils.dropdown_utils import generate_list_items
-import plotly.express as px
 from components.slider import Slider
-from utils.dropdown_utils import agg_mode_list
+from controllers.database import load_numeric_column_names
+from controllers.variable_correlation_controller import lag_correlation
+from dash.dependencies import Input, Output
+from utils.dropdown_utils import agg_mode_list, generate_list_items
 
 pg_id = 'lag-correlation'
 

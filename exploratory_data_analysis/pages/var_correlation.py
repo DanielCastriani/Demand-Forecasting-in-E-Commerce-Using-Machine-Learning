@@ -4,7 +4,7 @@ import plotly.express as px
 from app import app, categories
 from components.containers import Content, FilterContainer
 from components.dropdown import Dropdown
-from controllers.database import load_database, load_numeric_column_names
+from controllers.database import load_numeric_column_names
 from controllers.variable_correlation_controller import feature_correlation
 from dash.dependencies import Input, Output
 from utils.dropdown_utils import agg_mode_list, generate_list_items

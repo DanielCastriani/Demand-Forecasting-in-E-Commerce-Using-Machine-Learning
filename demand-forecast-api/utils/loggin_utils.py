@@ -30,6 +30,8 @@ def create_loggin(path: str = 'logs', name='train', mode: FileMode = 'w', level:
         console.addHandler(sh)
 
     console.setLevel(level)
+    
+    return console
 
 
 def get_loggin(path: str = 'logs', name='train', mode: FileMode = 'a', level: Any = logging.INFO):
@@ -44,7 +46,7 @@ def get_loggin(path: str = 'logs', name='train', mode: FileMode = 'a', level: An
 @contextlib.contextmanager
 def timer(console: logging.Logger = None, loggin_name: str = None, message_prefix: str = ''):
 
-    if not console:
+    if console is None:
         console = get_loggin(name=loggin_name)
 
     start_time = time()

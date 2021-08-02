@@ -1,4 +1,3 @@
-from configs.feature_config import KEYS
 import os
 import pickle
 from typing import List
@@ -14,8 +13,7 @@ def one_hot_encoder(
         path: str = 'bin',
         file_name: str = 'one_hot_encoder.pickle',
         train: bool = True):
-
-    keys = [k for k in keys if k != 'product_id']
+    keys = [c for c in keys if c != 'product_id']
 
     arr = dataset[keys].values
 
@@ -48,9 +46,12 @@ def one_hot_encoder(
 
     df = pd.concat([dataset, cat], axis=1)
 
-    df = df.drop(columns=KEYS)
+    keys_df = df[keys].copy()
+    keys_df = keys_df.reset_index(drop=True)
 
-    return df, columns
+    df = df.drop(columns=keys)
+
+    return df, keys_df, columns
 
 
 def load_one_hot_encoder(path: str = 'bin', file_name: str = 'one_hot_encoder.pickle'):

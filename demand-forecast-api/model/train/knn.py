@@ -1,18 +1,18 @@
 
-import pickle
-
+import json
+from utils.report_utils import save_report
+from utils.model_utils import create_model_folder
+from utils.config_utils import get_configs
 import pandas as pd
-from configs.feature_config import KEYS, TARGET
 from feature_engineering.make_features import make_features
 from sklearn.neighbors import KNeighborsRegressor
 from utils.config_utils import get_configs
 from utils.dataset_utils import load_dataset
 from utils.error_report import error_report
-from utils.file_utils import create_path_if_not_exists
-from utils.loggin_utils import timer
-from utils.preprocessing.normalizer import normalizer
-from utils.preprocessing.one_hot_encode import one_hot_encoder
-from utils.split_utils import split_train_test_timeseries, split_x_y
+from utils.file_utils import create_path_if_not_exists, save_model
+from utils.loggin_utils import get_loggin, timer
+from utils.split_utils import split_pipeline
+from configs.feature_config import config_list
 
 pd.options.display.max_columns = None
 
@@ -21,51 +21,59 @@ def train_knn():
 
     test_date = '2018-05-01'
 
-    with timer(loggin_name='train', message_prefix='train_knn'):
-        dataset = load_dataset()
-        dataset, numeric_columns = make_features(dataset)
-        numeric_columns = [c for c in numeric_columns if c != TARGET]
+    console = get_loggin()
+    console.info(json.dumps(get_configs(), indent=4))
 
-        train, test = split_train_test_timeseries(dataset, test_date=test_date, verbose=True)
+    with timer(loggin_name='train', message_prefix=f'train KNN models'):
+        for config in config_list:
+            model_name, model_path = create_model_folder(config)
 
-        train, _ = one_hot_encoder(train, keys=KEYS, train=True)
-        train, _ = normalizer(train, columns=numeric_columns, train=True)
+            with timer(loggin_name='train', message_prefix=f'train {model_name}'):
+                dataset = load_dataset()
+                dataset, numeric_columns = make_features(dataset, config=config)
 
-        test, _ = one_hot_encoder(test, keys=KEYS, train=False)
-        test, _ = normalizer(test, columns=numeric_columns, train=False)
+                train_keys, test_keys, x_train, y_train, x_test, y_test = split_pipeline(
+                    test_date,
+                    config,
+                    model_path,
+                    dataset,
+                    numeric_columns)
 
-        x_train, y_train = split_x_y(train, TARGET)
-        x_test, y_test = split_x_y(test, TARGET)
+                error_list = []
+                total_k = 30
+                for k in range(5, total_k):
+                    knn = KNeighborsRegressor(n_neighbors=k, n_jobs=get_configs('n_jobs'))
+                    knn.fit(x_train, y_train)
 
-        error_list = []
-        for k in range(5, 1500):
-            knn = KNeighborsRegressor(n_neighbors=k, n_jobs=get_configs('n_jobs'))
-            knn.fit(x_train, y_train)
+                    predict = knn.predict(x_test)
 
-            predict = knn.predict(x_test)
-            error = error_report(y_test, predict)
+                    error = error_report(y_test, predict)
+                    error_list.append({**error, 'k': k})
+                    console.info(f'{k} / {total_k} - {error}')
 
-            print(f'{k} - {error}')
-            error_list.append({**error, 'k': k})
+                error_df = pd.DataFrame(error_list)
+                error_df = error_df.sort_values('mape')
+                error_df.to_csv(create_path_if_not_exists(model_path, filename=f'{model_name}.csv'), index=False)
 
-        error_df = pd.DataFrame(error_list)
+                best = error_df.head(1)
 
-        error_df = error_df.sort_values('r2')
+                k = best['k'].values[0]
+                knn = KNeighborsRegressor(n_neighbors=k, n_jobs=get_configs('n_jobs'))
+                knn.fit(x_train, y_train)
 
-        error_df.to_csv(create_path_if_not_exists('logs', filename='knn_error.csv'), index=False)
+                save_model(knn, model_path=model_path, file_name='knn.pickle')
 
-        best_k = int(error_df.iloc[0]['k'])
-        knn = KNeighborsRegressor(n_neighbors=best_k, n_jobs=get_configs('n_jobs'))
-        knn.fit(x_train, y_train)
+                save_report(
+                    model_path=model_path,
+                    train_keys=train_keys,
+                    test_keys=test_keys,
+                    x_train=x_train,
+                    y_train=y_train,
+                    x_test=x_test,
+                    y_test=y_test,
+                    model=knn,
+                )
 
-        train_predict = knn.predict(x_train)
-        test_predict = knn.predict(x_test)
 
-        print('train')
-        error_report(y_train, train_predict, verbose=True)
-
-        print('\ntest')
-        error_report(y_test, test_predict, verbose=True)
-
-        with open('bin/knn.pickle', 'wb') as f:
-            pickle.dump(knn, f)
+if __name__ == '__main__':
+    train_knn()

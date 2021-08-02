@@ -15,7 +15,6 @@
 			"140"
 		],
 		"python.languageServer": "Pylance",
-		"python.analysis.typeCheckingMode": "off",
 		"jupyter.sendSelectionToInteractiveWindow": true,
 		"jupyter.notebookFileRoot": "${workspaceFolder}",
 		"files.exclude": {
@@ -23,6 +22,11 @@
 			"**/data": false,
 			"**/bin": false,
 			"**/.venv": true,
+		},
+		"python.analysis.diagnosticMode": "workspace",
+		"python.analysis.typeCheckingMode": "basic",
+		"python.analysis.diagnosticSeverityOverrides": {
+			"reportGeneralTypeIssues": "none"
 		},
 	},
 	"extensions": {

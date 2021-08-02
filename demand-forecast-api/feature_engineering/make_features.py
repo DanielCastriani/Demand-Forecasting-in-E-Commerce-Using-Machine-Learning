@@ -1,19 +1,18 @@
 
 
-from configs.feature_config import AGG_MODE, DATE_COLUMN, KEYS, LAG_CONFIG, TARGET, VALUES
 from typing import List
 
 import pandas as pd
 from pandas.core.groupby.generic import DataFrameGroupBy
-from typehint.config_types import LagConfig
+from typehint.config_types import FeatureConfigs, LagConfig
 from utils.date_utils import create_aggregation_cols, join_date
 
 
-def aggregate(dataset: pd.DataFrame, date_cols: List[str]):
+def aggregate(dataset: pd.DataFrame, date_cols: List[str], keys: List[str], values: List[str], targer: str):
     # Weighted Mean
-    total = dataset.groupby([*KEYS, *date_cols]).sum()
+    total = dataset.groupby([*keys, *date_cols]).sum()
 
-    total.loc[:, VALUES] = total.loc[:, VALUES].div(total.loc[:, TARGET], axis=0)
+    total.loc[:, values] = total.loc[:, values].div(total.loc[:, targer], axis=0)
 
     return total.reset_index()
 
@@ -23,7 +22,10 @@ def lag_feature(dataset: pd.DataFrame, grouped: DataFrameGroupBy, config: LagCon
     arr_range = config.get('range')
 
     if not arr_range:
-        arr_range = range(config['start'], config['end'] + 1, config['steps'])
+        if config['end']:
+            arr_range = range(config['start'] or 1, config['end'] + 1, config['steps'] or 1)
+        else:
+            raise Exception("Missing 'end' or 'range' property")
 
     col = config["column"]
 
@@ -40,11 +42,11 @@ def lag_feature(dataset: pd.DataFrame, grouped: DataFrameGroupBy, config: LagCon
     return dataset, lag_cols
 
 
-def lag_features(dataset: pd.DataFrame):
-    grouped = dataset.groupby(KEYS)
+def lag_features(dataset: pd.DataFrame, lag_config_list: List[LagConfig], keys: List[str]):
+    grouped = dataset.groupby(keys)
     lag_cols_list = []
 
-    for c in LAG_CONFIG:
+    for c in lag_config_list:
         dataset, lag_cols = lag_feature(dataset, grouped, c)
 
         lag_cols_list = [*lag_cols_list, c['column'], *lag_cols]
@@ -52,19 +54,19 @@ def lag_features(dataset: pd.DataFrame):
     return dataset, lag_cols_list
 
 
-def make_features(dataset: pd.DataFrame, inplace: bool = False):
+def make_features(dataset: pd.DataFrame, config: FeatureConfigs, inplace: bool = False):
     if not inplace:
         dataset = dataset.copy()
 
-    dataset = dataset[[DATE_COLUMN, *KEYS, *VALUES, TARGET]]
+    dataset = dataset[[config['date_column'], *config['keys'], *config['values'], config['target']]]
 
-    dataset, date_cols = create_aggregation_cols(dataset, agg_mode=AGG_MODE, date_col=DATE_COLUMN)
-    dataset = aggregate(dataset, date_cols)
+    dataset, date_cols = create_aggregation_cols(dataset, agg_mode=config['agg_mode'], date_col=config['date_column'])
+    dataset = aggregate(dataset, date_cols, keys=config['keys'], values=config['values'], targer=config['target'])
 
-    dataset = join_date(dataset, agg_mode=AGG_MODE, column_name=DATE_COLUMN)
+    dataset = join_date(dataset, agg_mode=config['agg_mode'], column_name=config['date_column'])
 
     dataset['total'] = dataset['price'] + dataset['freight_value']
 
-    dataset, numeric_columns = lag_features(dataset)
+    dataset, numeric_columns = lag_features(dataset, lag_config_list=config['lag_config'], keys=config['keys'])
 
     return dataset, numeric_columns

@@ -1,9 +1,9 @@
 from typehint.config_types import LagConfig
 
 KEYS = [
-    'seller_state',
+    # 'seller_state',
     'product_category_name',
-    'product_id',
+    # 'product_id',
     'order_status',
     'is_delayed',
 ]
@@ -29,6 +29,7 @@ VALUES = [
 ]
 
 DATE_COLUMN = 'date'
+
 TARGET = 'qty'
 
 AGG_MODE = 'w'

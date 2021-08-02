@@ -10,9 +10,12 @@ def generate_config_file():
     config = ConfigParser()
 
     hdfs_url = input('hdfs url [hdfs://hadoop:9000/user/daniel/dataset]:') or 'hdfs://hadoop:9000/user/daniel/dataset'
+    n_jobs = input('n jobs [5]:')
+    n_jobs = int(n_jobs) if n_jobs else 5
 
     config['DEFAULT'] = ConfigType(
-        hdfs=hdfs_url
+        hdfs=hdfs_url,
+        n_jobs=n_jobs,
     )
 
     file_path = create_path_if_not_exists('configs', filename='config.ini')
@@ -30,6 +33,7 @@ def get_configs(key: str = None):
     default = dict(parser.items('DEFAULT'))
 
     configs = ConfigType(**default)
+    configs['n_jobs'] = int(configs['n_jobs'])
 
     if key:
         return configs[key]

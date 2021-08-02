@@ -19,7 +19,7 @@ def error_report(y_true: pd.Series, y_pred: np.ndarray, verbose: bool = False):
     mae = mean_squared_error(y_true, y_pred)
     mape = mean_absolute_percentage_error(y_true, y_pred)
     r2 = r2_score(y_true, y_pred)
-    corr, p_value = correlation(y_true, y_pred)
+    corr, p_value = correlation(y_true, y_pred, verbose=False)
 
     if verbose:
         print(f'mse: {mse:.3f}')

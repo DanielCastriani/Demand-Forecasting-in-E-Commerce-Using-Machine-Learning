@@ -5,6 +5,7 @@ from typing import List, Optional, TypedDict
 
 class ConfigType(TypedDict):
     hdfs: str
+    n_jobs: int
 
 
 class LagConfig(TypedDict):

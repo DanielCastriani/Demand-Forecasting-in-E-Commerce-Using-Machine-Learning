@@ -1,9 +1,11 @@
 
-from utils.config_utils import get_configs
+import pickle
+
 import pandas as pd
 from configs.feature_config import KEYS, TARGET
 from feature_engineering.make_features import make_features
 from sklearn.neighbors import KNeighborsRegressor
+from utils.config_utils import get_configs
 from utils.dataset_utils import load_dataset
 from utils.error_report import error_report
 from utils.file_utils import create_path_if_not_exists
@@ -64,3 +66,6 @@ def train_knn():
 
         print('\ntest')
         error_report(y_test, test_predict, verbose=True)
+
+        with open('bin/knn.pickle', 'wb') as f:
+            pickle.dump(knn, f)

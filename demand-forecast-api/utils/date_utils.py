@@ -28,7 +28,7 @@ def create_aggregation_cols(df: pd.DataFrame, agg_mode: AggregationMode, date_co
 
 
 def join_date(df: pd.DataFrame, agg_mode: AggregationMode, column_name='date', inplace: bool = False):
-   
+
     if not inplace:
         df = df.copy()
 
@@ -44,4 +44,14 @@ def join_date(df: pd.DataFrame, agg_mode: AggregationMode, column_name='date', i
             return datetime(year=s['y'], month=s['m'], day=s['d'])
 
     df[column_name] = df.apply(lambda s: strptime(s, agg_mode), axis=1)
+
+    cols = ['y']
+    if agg_mode != 'y':
+        cols.append('m')
+        if agg_mode != 'm':
+            cols.append('w')
+            if agg_mode != 'w':
+                cols.append('d')
+
+    df = df.drop(columns=cols)
     return df

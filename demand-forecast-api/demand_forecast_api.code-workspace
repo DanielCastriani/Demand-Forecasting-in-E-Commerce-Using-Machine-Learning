@@ -22,7 +22,7 @@
 			"**/__pycache__": true,
 			"**/data": false,
 			"**/bin": false,
-			"**/.venv": false,
+			"**/.venv": true,
 		},
 	},
 	"extensions": {

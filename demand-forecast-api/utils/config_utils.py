@@ -1,5 +1,6 @@
 import os
 from configparser import ConfigParser
+from typing import Literal
 
 from typehint import ConfigType
 
@@ -10,9 +11,13 @@ def generate_config_file():
     config = ConfigParser()
 
     hdfs_url = input('hdfs url [hdfs://hadoop:9000/user/daniel/dataset]:') or 'hdfs://hadoop:9000/user/daniel/dataset'
+    n_jobs = input('N_JOBS [5]:') or 5
+
+    n_jobs = int(n_jobs)
 
     config['DEFAULT'] = ConfigType(
-        hdfs=hdfs_url
+        hdfs=hdfs_url,
+        n_jobs=n_jobs,
     )
 
     file_path = create_path_if_not_exists('configs', filename='config.ini')
@@ -30,6 +35,8 @@ def get_configs(key: str = None):
     default = dict(parser.items('DEFAULT'))
 
     configs = ConfigType(**default)
+
+    configs['n_jobs'] = int(configs.get('n_jobs', -1))
 
     if key:
         return configs[key]

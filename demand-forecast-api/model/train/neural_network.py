@@ -16,7 +16,6 @@ from tensorflow.keras.callbacks import TensorBoard
 from tensorflow.keras import backend as K
 
 
-
 def train_neural_network():
     test_date = '2018-05-01'
 
@@ -24,9 +23,9 @@ def train_neural_network():
     console.info(json.dumps(get_configs(), indent=4))
 
     grid_parameters = {
-        'model': ['a', 'a2', 'b', 'b2', 'c', 'c2', 'd', 'd2'],
-        'lr': [.01, .001, .0001],
-        'batch_size': [64, 128],
+        'model': ['a', 'a2', 'b', 'b2', 'c', 'd'],
+        'lr': [.001, .0001],
+        'batch_size': [64],
         'epochs': [100, 150, 200],
     }
 
@@ -81,3 +80,6 @@ def train_neural_network():
                 del model
                 K.clear_session()
 
+
+if __name__ == '__main__':
+    train_neural_network()

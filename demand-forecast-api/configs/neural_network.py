@@ -41,29 +41,11 @@ def config_c(input: Input):
     return x
 
 
-def config_c2(input: Input):
-    x = Dense(64, activation='tanh')(input)
-    x = Dense(64, activation='tanh')(x)
-    x = Dense(128, activation='tanh')(x)
-    x = Dense(128, activation='tanh')(x)
-    x = Dense(256, activation='relu')(x)
-    return x
-
-
 def config_d(input: Input):
     x = Dense(256, activation='relu')(input)
     x = Dense(256, activation='relu')(x)
     x = Dense(256, activation='relu')(x)
     x = Dense(256, activation='relu')(x)
-    x = Dense(256, activation='relu')(x)
-    return x
-
-
-def config_d2(input: Input):
-    x = Dense(256, activation='tanh')(input)
-    x = Dense(256, activation='tanh')(x)
-    x = Dense(256, activation='tanh')(x)
-    x = Dense(256, activation='tanh')(x)
     x = Dense(256, activation='relu')(x)
     return x
 
@@ -74,9 +56,7 @@ configs = {
     'b': config_b,
     'b2': config_b2,
     'c': config_c,
-    'c2': config_c2,
     'd': config_d,
-    'd2': config_d2,
 }
 
 

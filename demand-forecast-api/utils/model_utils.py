@@ -95,11 +95,11 @@ def grid_search_keras(
 
         model = create_model(input_size, config=config['model'], lr=config['lr'])
 
-        model.fit(x_train, y_train, batch_size=config['batch_size'], epochs=config['epochs'])
+        model.fit(x_train, y_train, batch_size=config['batch_size'], epochs=config['epochs'], verbose=False)
         predict = model.predict(x_test)
 
         grid_search_report(y_test, console, total_iter, error_list, i, config, start, predict)
-        
+
         del model
         K.clear_session()
 

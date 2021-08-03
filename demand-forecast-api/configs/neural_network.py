@@ -60,7 +60,7 @@ configs = {
 }
 
 
-def create_model(input_len: int, config: Literal['a', 'b', 'c'], lr: float):
+def create_neural_network_model(input_len: int, config: Literal['a', 'b', 'c'], lr: float):
     hidden_layer = configs.get(config, config_a)
 
     input = Input(shape=(input_len))

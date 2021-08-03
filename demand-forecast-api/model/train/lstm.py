@@ -1,4 +1,5 @@
 
+from configs.lstm import create_lstm_model
 from utils.file_utils import create_path_if_not_exists
 from utils.report_utils import save_report
 from configs.neural_network import create_neural_network_model
@@ -23,10 +24,10 @@ def train_neural_network():
     console.info(json.dumps(get_configs(), indent=4))
 
     grid_parameters = {
-        'model': ['a', 'a2', 'b', 'b2', 'c', 'd'],
+        'model': ['a',  'b',  'c'],
         'lr': [.001, .0001],
         'batch_size': [64],
-        'epochs': [100, 150, 200],
+        'epochs': [200, 500],
     }
 
     with timer(loggin_name='train', message_prefix=f'Train Neural Netwrok'):
@@ -45,7 +46,7 @@ def train_neural_network():
                     numeric_columns)
 
                 best, error_df = grid_search_keras(
-                    create_model_callback=create_neural_network_model,
+                    create_model_callback=create_lstm_model,
                     grid_parameters=grid_parameters,
                     x_train=x_train,
                     y_train=y_train,

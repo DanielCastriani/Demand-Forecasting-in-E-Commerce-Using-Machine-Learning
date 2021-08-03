@@ -3,13 +3,13 @@
 import logging
 from itertools import product
 from time import time
-from typing import Any, Dict, List
+from typing import Any, Callable, Dict, List
 
 import numpy as np
 import pandas as pd
-from configs.neural_network import create_model
 from tensorflow.keras import backend as K
 from typehint.config_types import FeatureConfigs
+from typehint.model_types import KerasCreateModelCallback
 
 from utils.error_report import error_report
 from utils.file_utils import create_path_if_not_exists, save_model_config
@@ -80,6 +80,7 @@ def grid_search(
 
 
 def grid_search_keras(
+        create_model_callback: KerasCreateModelCallback,
         grid_parameters: Dict[str, List[Any]],
         x_train: pd.DataFrame,
         y_train: pd.Series,
@@ -93,9 +94,9 @@ def grid_search_keras(
     for i, config in enumerate(configs):
         start = time()
 
-        model = create_model(input_size, config=config['model'], lr=config['lr'])
+        model = create_model_callback(input_size, config=config['model'], lr=config['lr'])
 
-        model.fit(x_train, y_train, batch_size=config['batch_size'], epochs=config['epochs'], verbose=False)
+        model.fit(x_train, y_train, batch_size=config['batch_size'], epochs=config['epochs'], verbose=True)
         predict = model.predict(x_test)
 
         grid_search_report(y_test, console, total_iter, error_list, i, config, start, predict)

@@ -1,14 +1,19 @@
 
 
+import logging
+from itertools import product
 from time import time
 from typing import Any, Dict, List
-from utils.error_report import error_report
-from utils.loggin_utils import calculate_elapsed_time, get_loggin
-from typehint.config_types import FeatureConfigs
-from utils.file_utils import create_path_if_not_exists, save_model_config
-import pandas as pd
 
-from itertools import product
+import numpy as np
+import pandas as pd
+from configs.neural_network import create_model
+from tensorflow.keras import backend as K
+from typehint.config_types import FeatureConfigs
+
+from utils.error_report import error_report
+from utils.file_utils import create_path_if_not_exists, save_model_config
+from utils.loggin_utils import calculate_elapsed_time, get_loggin
 
 
 def create_model_folder(config: FeatureConfigs, regressor_name: str):
@@ -19,13 +24,24 @@ def create_model_folder(config: FeatureConfigs, regressor_name: str):
     return model_name, model_path
 
 
-def grid_search(
-        Regressor: Any,
-        grid_parameters: Dict[str, List[Any]],
-        x_train: pd.DataFrame,
-        y_train: pd.Series,
-        x_test: pd.DataFrame,
-        y_test: pd.Series):
+def grid_search_hist(error_list: List[dict]):
+    error_df = pd.DataFrame(error_list)
+    error_df = error_df.sort_values('mape')
+
+    best = error_df.head(1).to_dict('records')[0]['config']
+    return error_df, best
+
+
+def grid_search_report(
+        y_test: pd.Series, console: logging, total_iter: int, error_list: List[dict],
+        i: int, config: Dict, start: float, predict: np.ndarray):
+    error = error_report(y_test, predict)
+    error_list.append({**error, 'config': config})
+
+    console.info(f'{i + 1} / {total_iter} - {calculate_elapsed_time(start)} - {error}')
+
+
+def generate_combination(grid_parameters: Dict[str, List[Any]]):
     console = get_loggin()
 
     combinations = product(*grid_parameters.values())
@@ -37,6 +53,18 @@ def grid_search(
     console.info(f'Grid search with {total_iter} combinations')
 
     error_list = []
+    return console, configs, total_iter, error_list
+
+
+def grid_search(
+        Regressor: Any,
+        grid_parameters: Dict[str, List[Any]],
+        x_train: pd.DataFrame,
+        y_train: pd.Series,
+        x_test: pd.DataFrame,
+        y_test: pd.Series):
+
+    console, configs, total_iter, error_list = generate_combination(grid_parameters)
 
     for i, config in enumerate(configs):
         start = time()
@@ -44,14 +72,37 @@ def grid_search(
         model.fit(x_train, y_train)
         predict = model.predict(x_test)
 
-        error = error_report(y_test, predict)
-        error_list.append({**error, 'config': config})
+        grid_search_report(y_test, console, total_iter, error_list, i, config, start, predict)
 
-        console.info(f'{i + 1} / {total_iter} - {calculate_elapsed_time(start)} - {error}')
+    error_df, best = grid_search_hist(error_list)
 
-    error_df = pd.DataFrame(error_list)
-    error_df = error_df.sort_values('mape')
+    return best, error_df
 
-    best = error_df.head(1).to_dict('records')[0]['config']
+
+def grid_search_keras(
+        grid_parameters: Dict[str, List[Any]],
+        x_train: pd.DataFrame,
+        y_train: pd.Series,
+        x_test: pd.DataFrame,
+        y_test: pd.Series):
+
+    console, configs, total_iter, error_list = generate_combination(grid_parameters)
+
+    input_size = len(x_train.columns)
+
+    for i, config in enumerate(configs):
+        start = time()
+
+        model = create_model(input_size, config=config['model'], lr=config['lr'])
+
+        model.fit(x_train, y_train, batch_size=config['batch_size'], epochs=config['epochs'])
+        predict = model.predict(x_test)
+
+        grid_search_report(y_test, console, total_iter, error_list, i, config, start, predict)
+        
+        del model
+        K.clear_session()
+
+    error_df, best = grid_search_hist(error_list)
 
     return best, error_df

@@ -68,3 +68,7 @@ def train_tree():
                     y_test=y_test,
                     model=model,
                 )
+
+
+if __name__ == '__main__':
+    train_tree()

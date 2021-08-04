@@ -23,6 +23,11 @@
 			"**/bin": false,
 			"**/.venv": true,
 		},
+		"files.watcherExclude": {
+			"**/.venv/*/**": true,
+			"**/.bin/*/**": true,
+			"**/.logs/*/**": true,
+		},
 		"python.analysis.diagnosticMode": "openFilesOnly",
 		"python.analysis.typeCheckingMode": "basic",
 		"python.analysis.diagnosticSeverityOverrides": {
@@ -47,7 +52,7 @@
 				"name": "RUN Server",
 				"type": "python",
 				"request": "launch",
-				"program": "index.py",
+				"program": "server.py",
 				"console": "integratedTerminal"
 			}
 		]

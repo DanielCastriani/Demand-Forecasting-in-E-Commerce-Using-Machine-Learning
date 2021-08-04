@@ -55,6 +55,10 @@ def display_page(pathname):
     side_menu = SideBar(side_menu_path)
 
     if route:
+        on_load = route.get('on_load_callback')
+        if on_load:
+            on_load()
+
         return side_menu, route['app']
     else:
         return side_menu, '404'

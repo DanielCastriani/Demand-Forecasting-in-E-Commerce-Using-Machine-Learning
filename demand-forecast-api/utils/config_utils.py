@@ -10,14 +10,14 @@ from utils.file_utils import create_path_if_not_exists
 def generate_config_file():
     config = ConfigParser()
 
-    hdfs_url = input('hdfs url [hdfs://hadoop:9000/user/daniel/dataset]:') or 'hdfs://hadoop:9000/user/daniel/dataset'
-    n_jobs = input('N_JOBS [5]:') or 5
+    HDFS_URL = input('hdfs url [hdfs://hadoop:9000/user/daniel/dataset]:') or 'hdfs://hadoop:9000/user/daniel/dataset'
+    N_JOBS = input('N_JOBS [5]:') or 5
 
-    n_jobs = int(n_jobs)
+    N_JOBS = int(N_JOBS)
 
     config['DEFAULT'] = ConfigType(
-        hdfs=hdfs_url,
-        n_jobs=n_jobs,
+        HDFS=HDFS_URL,
+        N_JOBS=N_JOBS,
     )
 
     file_path = create_path_if_not_exists('configs', filename='config.ini')
@@ -26,8 +26,9 @@ def generate_config_file():
         config.write(f)
 
 
-def get_configs(key: str = None):
+def get_config_file(key: str = None):
     parser = ConfigParser()
+    parser.optionxform = str
 
     file_path = os.path.join('configs', 'config.ini')
 
@@ -35,14 +36,28 @@ def get_configs(key: str = None):
     default = dict(parser.items('DEFAULT'))
 
     configs = ConfigType(**default)
-    configs['n_jobs'] = int(configs['n_jobs'])
+    configs['N_JOBS'] = int(configs['N_JOBS'])
 
-    configs['n_jobs'] = int(configs.get('n_jobs', -1))
+    configs['N_JOBS'] = int(configs.get('N_JOBS', -1))
 
     if key:
         return configs[key]
     else:
         return configs
+
+
+def _get_config(config: dict, key: str = None):
+    return dict(config) if key is None else config.get(key)
+
+
+def get_config(key: str = None):
+    from flask import current_app
+    try:
+        return _get_config(current_app.config, key)
+    except:
+        from server import app
+        with app.app_context():
+            return _get_config(current_app.config, key)
 
 
 if __name__ == '__main__':

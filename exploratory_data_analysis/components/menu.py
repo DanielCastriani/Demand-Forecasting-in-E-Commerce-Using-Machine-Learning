@@ -11,6 +11,8 @@ def MenuItem(route: Route):
     icon = route.get('icon', 'fa-bars')
 
     return html.A([
-        html.I(className=f'fas {icon}', style={'marginRight': '16px'}),
-        route['title']
+        html.Div([
+            html.I(className=f'fas {icon}', style={'marginRight': 20}),
+            html.Span(route['title'])
+        ], className='menu-item-container'),
     ], href=route['url'], className=' '.join(className))

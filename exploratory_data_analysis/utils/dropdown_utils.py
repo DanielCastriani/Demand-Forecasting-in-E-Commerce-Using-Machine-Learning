@@ -5,6 +5,9 @@ from typehint import ListItem
 def generate_list_items(values: List[str], add_all: bool = False):
     arr = [ListItem(value=x, label=str(x).replace('_', ' ').capitalize()) for x in values]
 
+    arr = [ListItem(label=i['label'], value=str(i['value']))
+           if isinstance(i['value'], bool) else i for i in arr]
+
     if add_all:
         return[ListItem(value=-1, label='Todos'), *arr]
 

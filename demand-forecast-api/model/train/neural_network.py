@@ -6,7 +6,7 @@ import json
 
 from configs.feature_config import config_list
 from feature_engineering.make_features import make_features
-from utils.config_utils import get_configs
+from utils.config_utils import get_config
 from utils.dataset_utils import load_dataset
 from utils.loggin_utils import get_loggin, timer
 from utils.model_utils import create_model_folder, grid_search_keras
@@ -20,7 +20,7 @@ def train_neural_network():
     test_date = '2018-05-01'
 
     console = get_loggin()
-    console.info(json.dumps(get_configs(), indent=4))
+    console.info(f'N_JOBS: {get_config("N_JOBS")}')
 
     grid_parameters = {
         'model': ['a', 'a2', 'b', 'b2', 'c', 'd'],

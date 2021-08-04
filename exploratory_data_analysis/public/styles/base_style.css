@@ -57,8 +57,12 @@ body {
 }
 
 .filter-container {
-    min-width: 20%;
+    min-width: 25%;
     min-height: 100%;
     overflow: auto;
-    background-color: #1D1D1D;
+    background-color: #1d1d1d;
+}
+
+.hide {
+    display: none;
 }

@@ -6,7 +6,7 @@ from typehint.base_types import AggregationMode
 
 class ConfigType(TypedDict):
     hdfs: str
-    n_jobs: int
+    N_JOBS: int
 
 
 class LagConfig(TypedDict):

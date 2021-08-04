@@ -1,18 +1,16 @@
 
-import json
-from utils.report_utils import save_report
-from utils.model_utils import create_model_folder
-from utils.config_utils import get_configs
 import pandas as pd
+from configs.feature_config import config_list
 from feature_engineering.make_features import make_features
 from sklearn.neighbors import KNeighborsRegressor
-from utils.config_utils import get_configs
+from utils.config_utils import get_config
 from utils.dataset_utils import load_dataset
 from utils.error_report import error_report
 from utils.file_utils import create_path_if_not_exists, save_model
 from utils.loggin_utils import get_loggin, timer
+from utils.model_utils import create_model_folder
+from utils.report_utils import save_report
 from utils.split_utils import split_pipeline
-from configs.feature_config import config_list
 
 pd.options.display.max_columns = None
 
@@ -22,7 +20,7 @@ def train_knn():
     test_date = '2018-05-01'
 
     console = get_loggin()
-    console.info(json.dumps(get_configs(), indent=4))
+    console.info(f'N_JOBS: {get_config("N_JOBS")}')
 
     with timer(loggin_name='train', message_prefix=f'train KNN models'):
         for config in config_list:
@@ -42,7 +40,7 @@ def train_knn():
                 error_list = []
                 total_k = 30
                 for k in range(5, total_k):
-                    knn = KNeighborsRegressor(n_neighbors=k, n_jobs=get_configs('n_jobs'))
+                    knn = KNeighborsRegressor(n_neighbors=k, N_JOBS=get_config('N_JOBS'))
                     knn.fit(x_train, y_train)
 
                     predict = knn.predict(x_test)
@@ -58,7 +56,7 @@ def train_knn():
                 best = error_df.head(1)
 
                 k = best['k'].values[0]
-                knn = KNeighborsRegressor(n_neighbors=k, n_jobs=get_configs('n_jobs'))
+                knn = KNeighborsRegressor(n_neighbors=k, N_JOBS=get_config('N_JOBS'))
                 knn.fit(x_train, y_train)
 
                 save_model(knn, model_path=model_path, file_name='knn.pickle')

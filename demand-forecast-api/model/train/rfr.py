@@ -5,7 +5,7 @@ import json
 from configs.feature_config import config_list
 from feature_engineering.make_features import make_features
 from sklearn.ensemble import RandomForestRegressor
-from utils.config_utils import get_configs
+from utils.config_utils import get_config
 from utils.dataset_utils import load_dataset
 from utils.file_utils import create_path_if_not_exists, save_model
 from utils.loggin_utils import get_loggin, timer
@@ -18,10 +18,10 @@ def train_tree():
     test_date = '2018-05-01'
 
     console = get_loggin()
-    console.info(json.dumps(get_configs(), indent=4))
+    console.info(f'N_JOBS: {get_config("N_JOBS")}')
 
     grid_parameters = {
-        'n_jobs': [get_configs('n_jobs')],
+        'N_JOBS': [get_config('N_JOBS')],
         'n_estimators': [75, 150, 200],
         'max_depth': [100, None],
         'min_samples_split': [2, 4],

@@ -3,11 +3,10 @@ from configs.lstm import create_lstm_model
 from utils.file_utils import create_path_if_not_exists
 from utils.report_utils import save_report
 from configs.neural_network import create_neural_network_model
-import json
 
 from configs.feature_config import config_list
 from feature_engineering.make_features import make_features
-from utils.config_utils import get_configs
+from utils.config_utils import get_config
 from utils.dataset_utils import load_dataset
 from utils.loggin_utils import get_loggin, timer
 from utils.model_utils import create_model_folder, grid_search_keras
@@ -15,24 +14,26 @@ from utils.split_utils import split_pipeline
 
 from tensorflow.keras.callbacks import TensorBoard
 from tensorflow.keras import backend as K
+import tensorflow as tf
 
 
 def train_neural_network():
     test_date = '2018-05-01'
 
     console = get_loggin()
-    console.info(json.dumps(get_configs(), indent=4))
+    console.info(f'N_JOBS: {get_config("N_JOBS")}')
 
     grid_parameters = {
         'model': ['a',  'b',  'c'],
         'lr': [.001, .0001],
-        'batch_size': [64],
+        'batch_size': [32],
         'epochs': [200, 500],
     }
 
-    with timer(loggin_name='train', message_prefix=f'Train Neural Netwrok'):
+    with timer(loggin_name='train', message_prefix=f'LSTM') as console:
+        console.info(f'\n\nGPU: {tf.test.is_gpu_available()}\n\n')
         for config in config_list:
-            model_name, model_path = create_model_folder(config, regressor_name='NeuralNetwork')
+            model_name, model_path = create_model_folder(config, regressor_name='LSTM')
 
             with timer(loggin_name='train', message_prefix=f'train {model_name}'):
                 dataset = load_dataset()

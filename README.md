@@ -10,7 +10,6 @@ Demand forecasting is essential for making decisions to make a store more compet
 
 ```
 start-dfs.sh
-start-yarn.sh
 /opt/spark/sbin/start-master.sh
 /opt/spark/sbin/start-slave.sh spark://192.168.2.100:7077
 ```
@@ -35,6 +34,7 @@ hdfs dfs -mkdir /user/daniel/dataset
 
 [spark](http://localhost:8080/)
 
+Before run the projects, you will need to import data by running scripts from import_data projects. You will need to read the [import_data](import_data/README.md) documentation.
 
 ## Datasets
 
@@ -42,6 +42,7 @@ hdfs dfs -mkdir /user/daniel/dataset
 - https://www.kaggle.com/olistbr/marketing-funnel-olist
 - https://sidra.ibge.gov.br/tabela/1737 [IPCA - Número-índice (base: dezembro de 1993 = 100)]
 - https://dadosabertos.bcb.gov.br/dataset/10813-taxa-de-cambio---livre---dolar-americano-compra
+
 
 ## Data Dictionary
 

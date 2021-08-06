@@ -1,4 +1,9 @@
 # Install Hadoop
+if you are in your user, change to hadoop user.
+
+```sh
+su hadoop
+```
 
 ```sh
 wget https://archive.apache.org/dist/hadoop/common/hadoop-3.3.0/hadoop-3.3.0.tar.gz
@@ -63,17 +68,26 @@ export YARN_HOME=$HADOOP_HOME
 export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
 ```
 
+source ~/.bashrc
+
 
 # Format HDFS
-```
-su hadoop
-
+```sh
 hdfs namenode -format
 
 start-dfs.sh
 
 hdfs dfs -mkdir /user
 hdfs dfs -mkdir /user/hadoop
+
+# Is not recommended to allow rwx for everyone, only for didatical proposals
+sudo chmod -R 777 /opt/hadoop/dfs/
+
+hdfs dfs -mkdir /user/[you user]
+hdfs dfs -chown [you user] /user/[you user]
+
+hdfs dfs -mkdir /user/[you user]/dataset
+hdfs dfs -chown [you user] /user/[you user]/dataset
 ```
 
 
@@ -82,7 +96,7 @@ http://localhost:9870/
 check if have datanote in Datanode usage histogram
 
 
-# Config Yarn
+# Config Yarn (Optional)
 
 
 vim /opt/hadoop/etc/hadoop/mapred-site.xml

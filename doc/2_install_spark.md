@@ -15,7 +15,11 @@ export PATH=$PATH:$SPARK_HOME/bin
 ```
 
 
+```sh
 sudo cp /opt/spark/conf/spark-env.sh.template /opt/spark/conf/spark-env.sh
+
+```
+
 sudo vim /opt/spark/conf/spark-env.sh
 ```sh
 SPARK_MASTER_HOST='192.168.2.100'

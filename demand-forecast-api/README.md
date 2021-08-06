@@ -6,3 +6,7 @@ that whas generated in root folder
 python -m utils.config_utils --generate
 ```
 
+To run in DEV mode, you will need to run the command below
+```sh
+python server.py
+```

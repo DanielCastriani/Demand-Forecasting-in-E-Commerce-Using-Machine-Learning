@@ -56,7 +56,7 @@ def train_tree():
                 model = RandomForestRegressor(**best)
                 model.fit(x_train, y_train)
 
-                save_model(model, model_path=model_path, file_name='rft.pickle')
+                save_model(model, model_path=model_path, file_name='model.pickle')
 
                 save_report(
                     model_path=model_path,

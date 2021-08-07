@@ -59,7 +59,7 @@ def train_knn():
                 knn = KNeighborsRegressor(n_neighbors=k, N_JOBS=get_config('N_JOBS'))
                 knn.fit(x_train, y_train)
 
-                save_model(knn, model_path=model_path, file_name='knn.pickle')
+                save_model(knn, model_path=model_path, file_name='model.pickle')
 
                 save_report(
                     model_path=model_path,

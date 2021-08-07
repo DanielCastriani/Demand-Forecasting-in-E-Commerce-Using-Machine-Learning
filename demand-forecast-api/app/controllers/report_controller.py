@@ -6,8 +6,7 @@ import os
 
 import pandas as pd
 from app.dtos.http_response_dto import HTTPResponseDTO
-from app.dtos.report_dtos import ReportDTO, ReportItem, RequestReportDTO
-from typehint.config_types import FeatureConfigs
+from app.dtos.report_dtos import ReportDTO, RequestReportDTO
 
 
 def get_report_list():
@@ -28,14 +27,6 @@ def get_report_list():
     )
 
 
-def get_config(model_name: str) -> FeatureConfigs:
-    config_path = os.path.join('bin', model_name, 'config.json')
-    if os.path.exists(config_path):
-        with open(config_path, 'r') as f:
-            return json.load(f)
-
-    else:
-        raise FileNotFoundError('Config file not found')
 
 def get_model_performance_report():
     path_list = model_controller.model_list()
@@ -85,7 +76,7 @@ def get_report_data(body: RequestReportDTO):
 
         df = pd.read_csv(path)
 
-        config = get_config(body['model_name'])
+        config = model_controller.get_config(body['model_name'])
         config['keys'] = ['type', *[c for c in config['keys'] if c != 'product_id']]
 
         filters = {c: sorted(df[c].unique().tolist()) for c in config['keys']}

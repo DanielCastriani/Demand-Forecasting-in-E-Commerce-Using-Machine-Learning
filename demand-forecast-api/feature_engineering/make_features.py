@@ -23,7 +23,7 @@ def lag_feature(dataset: pd.DataFrame, grouped: DataFrameGroupBy, config: LagCon
 
     if not arr_range:
         if config['end']:
-            arr_range = range(config['start'] or 1, config['end'] + 1, config['steps'] or 1)
+            arr_range = range(config['start'] or 1, int(config['end']) + 1, config['steps'] or 1)
         else:
             raise Exception("Missing 'end' or 'range' property")
 
@@ -66,6 +66,8 @@ def make_features(dataset: pd.DataFrame, config: FeatureConfigs, inplace: bool =
     dataset = join_date(dataset, agg_mode=config['agg_mode'], column_name=config['date_column'])
 
     dataset['total'] = dataset['price'] + dataset['freight_value']
+
+    dataset = dataset.sort_values('date')
 
     dataset, numeric_columns = lag_features(dataset, lag_config_list=config['lag_config'], keys=config['keys'])
 

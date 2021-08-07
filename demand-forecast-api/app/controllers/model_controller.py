@@ -1,4 +1,5 @@
 import os, json
+from typehint.config_types import FeatureConfigs
 from typing import List
 from app.dtos.report_dtos import ReportItem
 
@@ -19,3 +20,14 @@ def model_list() -> List[ReportItem]:
 
         return path_list
     return []
+
+
+
+def get_config(model_name: str) -> FeatureConfigs:
+    config_path = os.path.join('bin', model_name, 'config.json')
+    if os.path.exists(config_path):
+        with open(config_path, 'r') as f:
+            return json.load(f)
+
+    else:
+        raise FileNotFoundError('Config file not found')

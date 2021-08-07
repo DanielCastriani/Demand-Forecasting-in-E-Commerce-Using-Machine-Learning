@@ -44,7 +44,7 @@ def one_hot_encoder(
 
     cat = pd.DataFrame(values, columns=columns)
 
-    df = pd.concat([dataset, cat], axis=1)
+    df = pd.concat([dataset.reset_index(drop=True), cat], axis=1)
 
     keys_df = df[keys].copy()
     keys_df = keys_df.reset_index(drop=True)

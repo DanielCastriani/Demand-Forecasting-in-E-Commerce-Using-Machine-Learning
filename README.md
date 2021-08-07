@@ -5,6 +5,7 @@ Demand forecasting is essential for making decisions to make a store more compet
 * [0 - Prepare Environment](./doc/0_prepare_environment.md)
 * [1 - Install Hadoop](./doc/1_install_hadoop.md)
 * [2 - Install Spark](./doc/2_install_spark.md)
+* [3 - Install Cuda](./doc/3_install_cuda.md)
 
 # Initialize Hadoop
 

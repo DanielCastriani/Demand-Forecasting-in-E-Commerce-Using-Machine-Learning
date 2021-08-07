@@ -24,6 +24,7 @@ body {
 
 .padding-container {
     padding: 16px;
+    margin-bottom: 64px;
 }
 
 .content-container {

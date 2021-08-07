@@ -26,7 +26,7 @@ def train_neural_network():
         'model': ['a', 'a2', 'b', 'b2', 'c', 'd'],
         'lr': [.001, .0001],
         'batch_size': [64],
-        'epochs': [100, 150, 200],
+        'epochs': [200, 500],
     }
 
     with timer(loggin_name='train', message_prefix=f'Train Neural Netwrok'):

@@ -4,6 +4,8 @@ from flask.app import Flask
 
 
 class DefaultConfig:
+    JSON_SORT_KEYS = False
+    
     @staticmethod
     def init(app: Flask):
         ext_configs = get_config_file()

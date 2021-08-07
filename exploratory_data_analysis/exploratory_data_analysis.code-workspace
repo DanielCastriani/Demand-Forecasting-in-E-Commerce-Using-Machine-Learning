@@ -5,6 +5,10 @@
 		}
 	],
 	"settings": {
+		"workbench.colorCustomizations": {
+			"statusBar.background" : "#1727b9",
+			"statusBar.debuggingBackground": "#0677d3"
+		},
 		"python.formatting.autopep8Args": [
 			"--max-line-length",
 			"140",

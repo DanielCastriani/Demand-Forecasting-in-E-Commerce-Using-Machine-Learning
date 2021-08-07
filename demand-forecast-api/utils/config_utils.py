@@ -9,6 +9,7 @@ from utils.file_utils import create_path_if_not_exists
 
 def generate_config_file():
     config = ConfigParser()
+    config.optionxform = lambda x: x.upper()
 
     HDFS_URL = input('hdfs url [hdfs://hadoop:9000/user/daniel/dataset]:') or 'hdfs://hadoop:9000/user/daniel/dataset'
     N_JOBS = input('N_JOBS [5]:') or 5

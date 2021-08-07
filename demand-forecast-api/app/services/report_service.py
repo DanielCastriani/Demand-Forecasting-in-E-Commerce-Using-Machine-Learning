@@ -21,3 +21,10 @@ def report():
     response = report_controller.get_report_data(body)
 
     return make_http_response(response)
+
+@main_routes.route('/performance_report', methods=['GET'])
+def report_performace():
+    
+    response = report_controller.get_model_performance_report()
+
+    return make_http_response(response)

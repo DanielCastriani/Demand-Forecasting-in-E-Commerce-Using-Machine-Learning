@@ -20,7 +20,7 @@
 		"jupyter.notebookFileRoot": "${workspaceFolder}",
 		"files.exclude": {
 			"**/__pycache__": true,
-			"**/data": true,
+			"**/data": false,
 			"**/.venv": true,
 		},
 	},

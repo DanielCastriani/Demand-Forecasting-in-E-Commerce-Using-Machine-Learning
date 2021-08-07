@@ -1,0 +1,84 @@
+table {
+    background-color: #ffffff00;
+    border-radius: 5px;
+    border-color: rgb(81, 81, 81)  1px solid !important;
+}
+
+th {
+    background: rgba(0, 0, 0, 0) !important;
+    border-color: rgb(81, 81, 81) !important;
+    border-style: solid !important;
+    border-width: 1px 0 !important;
+
+    padding: 16px  !important;
+}
+
+th > div > span {
+
+    font-weight: bolder !important;
+}
+
+
+td {
+    background: rgba(255, 255, 255, 0) !important;
+    padding: 16px  !important;
+}
+
+div > .column-header-name {
+    color: #fff
+}
+
+
+
+tbody:last-child{
+    border-start-start-radius: 5px;
+}
+
+tr > td  {
+    border-color: rgb(81, 81, 81) !important;
+    border-style: solid !important;
+    border-width: 1px 0 !important;
+
+}
+
+tr > td > div{
+    color: #fff;
+}
+
+tr {
+    background: #ffffff00 !important;
+}
+
+tr:hover {
+    background: #ffffff4d !important;
+}
+
+
+/* 
+
+tr:nth-child(even) > td  {
+    border: #00f solid 1px !important;
+
+}
+
+tr:nth-child(even) > td > div{
+    color: #fff;
+}
+
+tr:nth-child(even) {
+    background: #000 !important;
+}
+
+
+tr:nth-child(odd) > td  {
+    border: #0f0 solid 1px !important;
+}
+
+tr:nth-child(odd) > td > div{
+    color: #00f;
+}
+
+
+tr:nth-child(odd){
+    background: #555 !important;
+} */

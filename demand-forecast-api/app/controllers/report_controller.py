@@ -1,4 +1,5 @@
 
+from app.controllers import model_controller
 from app.utils.df_utils import filter_df
 import json
 import os
@@ -10,27 +11,15 @@ from typehint.config_types import FeatureConfigs
 
 
 def get_report_list():
-    path = 'bin'
-    if os.path.exists(path):
-        path_list = []
-        for entry in os.scandir(path):
+    path_list = model_controller.model_list()
 
-            config_path = os.path.join(entry.path, 'config.json')
-            with open(config_path, 'r') as f:
-                model_config = json.load(f)
+    if len(path_list) > 0:
+        path_list.sort(key=lambda x: x['name'])
 
-            granularity = model_config['keys']
-            agg_mode = model_config['agg_mode']
-
-            path_list.append(ReportItem(name=entry.name, keys=granularity, agg_mode=agg_mode))
-
-        if len(path_list) > 0:
-            path_list.sort(key=lambda x: x['name'])
-
-            return HTTPResponseDTO(
-                body=path_list,
-                success=True,
-            )
+        return HTTPResponseDTO(
+            body=path_list,
+            success=True,
+        )
 
     return HTTPResponseDTO(
         body=[],
@@ -47,6 +36,47 @@ def get_config(model_name: str) -> FeatureConfigs:
 
     else:
         raise FileNotFoundError('Config file not found')
+
+def get_model_performance_report():
+    path_list = model_controller.model_list()
+
+    root_path = 'bin/'
+
+    if len(path_list) > 0: 
+        df_list = []
+        
+        for path in path_list:
+            df = pd.read_csv(os.path.join(root_path, path['name'], 'erro.csv'))
+            df['Model'] = path['name']
+            df['ModelType'] = path['name'].split('_')[0]
+            df['AggregationMode'] = path['agg_mode']
+            df['Granularity'] = ', '.join(path['keys'])
+            
+            df_list.append(df)
+        
+        report_df = pd.concat(df_list)
+        report_df = report_df.rename(columns={'Unnamed: 0': 'dataset'})
+
+        report_df = report_df.sort_values(['dataset', 'AggregationMode', 'mape'])
+
+        report_df= report_df[['dataset', 'ModelType', 'Model', 'AggregationMode', 'mape', 'mae', 'Granularity']]
+
+        report_dict = report_df.to_dict(orient='records')
+
+        return HTTPResponseDTO(
+            body=report_dict,
+            success=True,
+        )
+
+
+
+    return HTTPResponseDTO(
+        body=[],
+        success=False,
+        message='No models found'
+    )
+
+    
 
 
 def get_report_data(body: RequestReportDTO):

@@ -1,5 +1,5 @@
 
-from typing import List
+from typing import Dict, List
 
 import pandas as pd
 
@@ -56,3 +56,13 @@ def get_report(model_name: str,
         return response['success'], df, filters
     else:
         return response['success'], response.get('message', 'error making request')
+
+
+def performance_report() -> Dict:
+    response = make_request_json('performance_report')
+
+    if response['success']:
+
+        return response['body']
+    else:
+        return {}

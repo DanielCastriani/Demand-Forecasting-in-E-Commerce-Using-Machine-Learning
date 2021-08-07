@@ -2,6 +2,8 @@
 
 import json
 
+import pandas as pd
+
 from configs.feature_config import config_list
 from feature_engineering.make_features import make_features
 from sklearn.ensemble import RandomForestRegressor
@@ -55,6 +57,10 @@ def train_tree():
 
                 model = RandomForestRegressor(**best)
                 model.fit(x_train, y_train)
+
+                feature = pd.DataFrame([ x_test.columns, model.feature_importances_], index=['Feature', 'FeatureImportance']).T
+
+                feature.to_csv(create_path_if_not_exists(model_path, filename=f'feature_importance.csv'), index=False)
 
                 save_model(model, model_path=model_path, file_name='model.pickle')
 

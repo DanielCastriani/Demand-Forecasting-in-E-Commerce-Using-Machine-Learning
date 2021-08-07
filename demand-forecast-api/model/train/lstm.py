@@ -17,7 +17,7 @@ from tensorflow.keras import backend as K
 import tensorflow as tf
 
 
-def train_neural_network():
+def lstm():
     test_date = '2018-05-01'
 
     console = get_loggin()
@@ -85,4 +85,4 @@ def train_neural_network():
 
 
 if __name__ == '__main__':
-    train_neural_network()
+    lstm()

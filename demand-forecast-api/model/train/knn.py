@@ -25,6 +25,7 @@ def train_knn():
     with timer(loggin_name='train', message_prefix=f'train KNN models'):
         for config in config_list:
             model_name, model_path = create_model_folder(config, regressor_name='KNeighborsRegressor')
+            console.info(f'\n\n\n{model_name}')
 
             with timer(loggin_name='train', message_prefix=f'train {model_name}'):
                 dataset = load_dataset()

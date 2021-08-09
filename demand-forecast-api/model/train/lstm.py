@@ -26,13 +26,14 @@ def lstm():
         'model': ['a',  'b',  'c'],
         'lr': [.001, .0001],
         'batch_size': [64],
-        'epochs': [200, 500],
+        'epochs': [500],
     }
 
     with timer(loggin_name='train', message_prefix=f'LSTM') as console:
         console.info(f'\n\nGPU: {tf.test.is_gpu_available()}\n\n')
         for config in config_list:
             model_name, model_path = create_model_folder(config, regressor_name='LSTM')
+            console.info(f'\n\n\n{model_name}')
 
             with timer(loggin_name='train', message_prefix=f'train {model_name}'):
                 dataset = load_dataset()

@@ -33,6 +33,7 @@ def train_tree():
     with timer(loggin_name='train', message_prefix=f'Train Tree algorithms'):
         for config in config_list:
             model_name, model_path = create_model_folder(config, regressor_name='RandomForestRegressor')
+            console.info(f'\n\n\n{model_name}')
 
             with timer(loggin_name='train', message_prefix=f'train {model_name}'):
                 dataset = load_dataset()

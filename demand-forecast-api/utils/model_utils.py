@@ -38,6 +38,8 @@ def grid_search_report(
     error = error_report(y_test, predict)
     error_list.append({**error, 'config': config})
 
+    error = {e: f'{error[e]:.3f}' for e in error if error.get(e)}
+
     console.info(f'{i + 1} / {total_iter} - {calculate_elapsed_time(start)} - {error}')
 
 
@@ -96,7 +98,7 @@ def grid_search_keras(
 
         model = create_model_callback(input_size, config=config['model'], lr=config['lr'])
 
-        model.fit(x_train, y_train, batch_size=config['batch_size'], epochs=config['epochs'], verbose=True)
+        model.fit(x_train, y_train, batch_size=config['batch_size'], epochs=config['epochs'], verbose=False)
         predict = model.predict(x_test)
 
         grid_search_report(y_test, console, total_iter, error_list, i, config, start, predict)

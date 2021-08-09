@@ -23,9 +23,9 @@ sudo apt-get update
 
 # Install development and runtime libraries (~4GB)
 sudo apt-get install --no-install-recommends \
-    cuda-11-0 \
-    libcudnn8=8.0.4.30-1+cuda11.0  \
-    libcudnn8-dev=8.0.4.30-1+cuda11.0
+    cuda-11-2 \
+    libcudnn8=8.1.0.77-1+cuda11.2  \
+    libcudnn8-dev=8.1.0.77-1+cuda11.2
 
 
 # Install TensorRT. Requires that libcudnn8 is installed above.
@@ -39,7 +39,7 @@ Add in .bashrc
 vim ~/.bashrc
 ```
 # Cuda
-export CUDA_HOME=/usr/local/cuda/cuda-11.0
+export CUDA_HOME=/usr/local/cuda
 export PATH=$PATH:$CUDA_HOME/bin
 export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
 
@@ -83,10 +83,8 @@ ll /usr/local | grep cuda
 ll /etc/alternatives/ | grep cuda
 
 
-sudo ln -s /usr/local/cuda-11.0/ /etc/alternatives/cuda
-sudo ln -s /usr/local/cuda-11.0  /usr/local/cuda 
+sudo ln -s /usr/local/cuda-11.2  /usr/local/cuda 
+sudo ln -s /usr/local/cuda-11.2/ /etc/alternatives/cuda
 ```
-
-
 
 

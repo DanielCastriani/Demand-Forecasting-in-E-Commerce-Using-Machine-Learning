@@ -1,20 +1,19 @@
 
-from configs.lstm import create_lstm_model
-from utils.file_utils import create_path_if_not_exists
-from utils.report_utils import save_report
-from configs.neural_network import create_neural_network_model
+import tensorflow as tf
 
 from configs.feature_config import config_list
+from configs.lstm import create_lstm_model
+from configs.neural_network import create_neural_network_model
 from feature_engineering.make_features import make_features
+from tensorflow.keras import backend as K
+from tensorflow.keras.callbacks import TensorBoard
 from utils.config_utils import get_config
 from utils.dataset_utils import load_dataset
+from utils.file_utils import create_path_if_not_exists
 from utils.loggin_utils import get_loggin, timer
 from utils.model_utils import create_model_folder, grid_search_keras
+from utils.report_utils import save_report
 from utils.split_utils import split_pipeline
-
-from tensorflow.keras.callbacks import TensorBoard
-from tensorflow.keras import backend as K
-import tensorflow as tf
 
 
 def lstm():
@@ -26,7 +25,7 @@ def lstm():
     grid_parameters = {
         'model': ['a',  'b',  'c'],
         'lr': [.001, .0001],
-        'batch_size': [32],
+        'batch_size': [64],
         'epochs': [200, 500],
     }
 
@@ -60,7 +59,7 @@ def lstm():
                     log_dir=create_path_if_not_exists(model_path, 'tensorboard'),
                     write_graph=True)
 
-                model = create_neural_network_model(len(x_train.columns), config=best['model'], lr=best['lr'])
+                model = create_lstm_model(len(x_train.columns), config=best['model'], lr=best['lr'])
                 model.fit(
                     x_train, y_train, validation_data=(x_test, y_test),
                     batch_size=best['batch_size'],

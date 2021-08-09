@@ -40,7 +40,7 @@ def train_knn():
                 error_list = []
                 total_k = 30
                 for k in range(5, total_k):
-                    knn = KNeighborsRegressor(n_neighbors=k, N_JOBS=get_config('N_JOBS'))
+                    knn = KNeighborsRegressor(n_neighbors=k, n_jobs=get_config('N_JOBS'))
                     knn.fit(x_train, y_train)
 
                     predict = knn.predict(x_test)
@@ -56,7 +56,7 @@ def train_knn():
                 best = error_df.head(1)
 
                 k = best['k'].values[0]
-                knn = KNeighborsRegressor(n_neighbors=k, N_JOBS=get_config('N_JOBS'))
+                knn = KNeighborsRegressor(n_neighbors=k, n_jobs=get_config('N_JOBS'))
                 knn.fit(x_train, y_train)
 
                 save_model(knn, model_path=model_path, file_name='model.pickle')

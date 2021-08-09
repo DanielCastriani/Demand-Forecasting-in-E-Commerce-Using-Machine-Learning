@@ -1,6 +1,5 @@
 import os
 from configparser import ConfigParser
-from typing import Literal
 
 from typehint import ConfigType
 
@@ -49,7 +48,6 @@ def get_config_file(key: str = None):
 
 def _get_config(config: dict, key: str = None):
     return dict(config) if key is None else config.get(key)
-
 
 def get_config(key: str = None):
     from flask import current_app

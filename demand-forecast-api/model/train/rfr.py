@@ -23,7 +23,7 @@ def train_tree():
     console.info(f'N_JOBS: {get_config("N_JOBS")}')
 
     grid_parameters = {
-        'N_JOBS': [get_config('N_JOBS')],
+        'n_jobs': [get_config('N_JOBS')],
         'n_estimators': [75, 150, 200],
         'max_depth': [100, None],
         'min_samples_split': [2, 4],

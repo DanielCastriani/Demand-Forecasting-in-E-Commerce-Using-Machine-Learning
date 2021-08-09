@@ -4,7 +4,7 @@ from model.train.neural_network import train_neural_network
 from model.train.rfr import train_tree
 
 if __name__ == '__main__':
-    train_knn()
-    train_tree()
-    train_neural_network()
     lstm()
+    train_neural_network()
+    train_tree()
+    train_knn()

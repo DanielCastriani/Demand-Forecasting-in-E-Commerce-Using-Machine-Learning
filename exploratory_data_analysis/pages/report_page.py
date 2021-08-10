@@ -1,51 +1,28 @@
-import pandas as pd
-from utils.dropdown_utils import generate_list_items
-from typehint.datatype import ListItem
 from typing import Dict, List
+from utils.df_utils import concat_lines
+
 import dash_core_components as dcc
 import dash_html_components as html
+import pandas as pd
 import plotly.graph_objects as go
+from app import app
 from components.containers import Content, FilterContainer
 from components.dropdown import Dropdown
 from controllers import report_controller
 from dash.dependencies import Input, Output
-from app import app
+from utils.filter_utils import forecast_filter, forecast_filter_fill_output, get_report_filter
 
 pg_id = 'train-report'
 
-success, body = report_controller.load_model_list()
 
-files = body if success else []
-
-
-def on_load():
-    global files
-
+@app.callback(Output(f'{pg_id}-report-list', 'options'), Input('url', 'pathname'))
+def on_load(_: str):
     success, body = report_controller.load_model_list()
+    files = []
     if success:
         files = body
 
     return files
-
-
-def get_filter(key: str, filters: Dict, styles: List, className: str, options: List):
-    values = filters.get(key)
-
-    className: List = className.split(' ') if className is not None else []
-
-    if values:
-        if 'hide' in className:
-            className.remove('hide')
-
-        options.append(generate_list_items(values, add_all=True))
-    else:
-        if 'hide' not in className:
-            className.append('hide')
-        options.append([])
-
-    styles.append(''.join(className))
-
-    return styles, options
 
 
 @app.callback([
@@ -95,7 +72,9 @@ def uptate_report(
 ):
     fig = go.Figure()
 
-    if model_name != -1:
+    fill_filters = model_name == -1
+
+    if not fill_filters:
         success, df, filters = report_controller.get_report(
             model_name,
             is_delayed,
@@ -110,22 +89,19 @@ def uptate_report(
 
         if success:
 
-            styles, options = get_filter('is_delayed', filters, styles, is_delayed_classname, options)
-            styles, options = get_filter('order_status', filters, styles, order_status_classname, options)
-            styles, options = get_filter('product_category_name', filters, styles, product_category_name_classname, options)
-            styles, options = get_filter('seller_id', filters, styles, seller_id_classname, options)
-            styles, options = get_filter('type', filters, styles, type_classname, options)
-
-            fig = go.Figure()
+            styles, options = forecast_filter(
+                is_delayed_classname,
+                order_status_classname,
+                product_category_name_classname,
+                seller_id_classname,
+                type_classname,
+                filters,
+                styles,
+                options)
 
             fig.add_trace(go.Scatter(x=df['date'], y=df['real'], name='Real', mode='lines'))
 
-            if df['type'].nunique() > 1:
-                df = df.sort_values('date')
-                first = df[df['type'] == 'test'].head(1)
-                first['type'] = 'train'
-                df = pd.concat([df, first])
-                df = df.sort_values('date')
+            df = concat_lines(df)
 
             groups = list(enumerate(df.groupby('type')))
             for i, group in groups:
@@ -133,12 +109,15 @@ def uptate_report(
                 fig.add_trace(go.Scatter(x=df_g['date'], y=df_g['predicted'], name=g_info.capitalize(), mode='lines'))
 
         else:
-            styles, options = fill_output(is_delayed_classname, order_status_classname,
-                                          product_category_name_classname, seller_id_classname, type_classname)
+            fill_filters = True
 
-    else:
-        styles, options = fill_output(is_delayed_classname, order_status_classname,
-                                      product_category_name_classname, seller_id_classname, type_classname)
+    if fill_filters:
+        styles, options = forecast_filter_fill_output(
+            is_delayed_classname,
+            order_status_classname,
+            product_category_name_classname,
+            seller_id_classname,
+            type_classname)
 
     fig.update_layout(
         template='plotly_dark',
@@ -150,10 +129,10 @@ def uptate_report(
 
     return [fig, *styles, *options]
 
-
 layout = html.Div([
     FilterContainer([
-        Dropdown(id=f'{pg_id}-report-list', label='Modelo', value=-1, options=files, optionHeight=65),
+        Dropdown(id=f'{pg_id}-report-list', label='Modelo', value=-1, options=[], optionHeight=65),
+
         Dropdown(id=f'{pg_id}-is-delayed', label='Em atraso', value=-1, options=[], visible=False),
         Dropdown(id=f'{pg_id}-order-status', label='Status do pedido', value=-1, options=[], visible=False),
         Dropdown(id=f'{pg_id}-category', label='Categoria', value=-1, options=[], visible=False),
@@ -170,14 +149,3 @@ layout = html.Div([
 
     # Slider(id='slider', value=30, min=5, max=120)
 ],  className='content-container')
-
-
-def fill_output(is_delayed_classname, order_status_classname, product_category_name_classname, seller_id_classname, type_classname):
-    styles = [
-        is_delayed_classname,
-        order_status_classname,
-        product_category_name_classname,
-        seller_id_classname,
-        type_classname, ]
-    options = [[]] * 5
-    return styles, options

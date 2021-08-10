@@ -1,3 +1,4 @@
+from dash_core_components.Loading import Loading
 from components.topbar import TopBar
 import os
 from components.sidebar import SideBar
@@ -21,7 +22,6 @@ app.layout = html.Div([
         html.Div(id='page-content', className='content'),
 
     ], className='content-container'),
-
 ], className='main-container')
 
 

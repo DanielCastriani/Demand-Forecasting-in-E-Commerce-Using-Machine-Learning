@@ -1,7 +1,7 @@
 table {
     background-color: #ffffff00;
     border-radius: 5px;
-    border-color: rgb(81, 81, 81)  1px solid !important;
+    border-color: rgb(81, 81, 81) 1px solid !important;
 }
 
 th {
@@ -10,38 +10,33 @@ th {
     border-style: solid !important;
     border-width: 1px 0 !important;
 
-    padding: 16px  !important;
+    padding: 16px !important;
 }
 
 th > div > span {
-
     font-weight: bolder !important;
 }
 
-
 td {
     background: rgba(255, 255, 255, 0) !important;
-    padding: 16px  !important;
+    padding: 24px 16px !important;
 }
 
 div > .column-header-name {
-    color: #fff
+    color: #fff;
 }
 
-
-
-tbody:last-child{
+tbody:last-child {
     border-start-start-radius: 5px;
 }
 
-tr > td  {
+tr > td {
     border-color: rgb(81, 81, 81) !important;
     border-style: solid !important;
     border-width: 1px 0 !important;
-
 }
 
-tr > td > div{
+tr > td > div {
     color: #fff;
 }
 
@@ -53,32 +48,45 @@ tr:hover {
     background: #ffffff4d !important;
 }
 
-
-/* 
-
-tr:nth-child(even) > td  {
-    border: #00f solid 1px !important;
-
+th > input {
+    color: #fff !important;
 }
 
-tr:nth-child(even) > td > div{
+th > input::placeholder {
+    color: rgb(179, 179, 179) !important;
+}
+
+.previous-next-container {
+    background-color: rgba(255, 255, 255, 0) !important;
     color: #fff;
 }
 
-tr:nth-child(even) {
-    background: #000 !important;
+.previous-next-container > button {
+    background-color: rgba(255, 255, 255, 0) !important;
 }
 
-
-tr:nth-child(odd) > td  {
-    border: #0f0 solid 1px !important;
+.previous-next-container > button > svg {
+    color: #fff;
 }
 
-tr:nth-child(odd) > td > div{
-    color: #00f;
+.previous-next-container > button:disabled > svg {
+    color: rgb(139, 139, 139);
+}
+.previous-next-container > button:disabled:hover > svg {
+    color: rgb(139, 139, 139);
 }
 
+.previous-next-container > button:hover > svg {
+    color: rgb(185, 185, 185);
+}
 
-tr:nth-child(odd){
-    background: #555 !important;
-} */
+.dash-cell-value > p > img {
+    height: 24px;
+    width: 24px;
+    color: #fff;
+    fill: #fff;
+}
+
+.cell-markdown > p {
+    margin: 0;
+}

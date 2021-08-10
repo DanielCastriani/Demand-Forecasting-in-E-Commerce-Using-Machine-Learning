@@ -10,7 +10,11 @@ def apply_preprocessing(
         config: FeatureConfigs,
         numeric_columns: List[str],
         model_path: str,
-        train: bool):
+        train: bool,
+        inplace: bool = False):
+
+    if not inplace:
+        df = df.copy()
 
     numeric_columns = [c for c in numeric_columns if c != config['target']]
 

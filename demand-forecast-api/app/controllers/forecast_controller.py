@@ -9,16 +9,16 @@ def make_forecast(body: ForecastRequestDTO):
     dataset = load_dataset()
     config = model_controller.get_config(body['model_name'])
 
-    res = forecast(config=config, dataset=dataset, body= body)
+    res = forecast(config=config, dataset=dataset, body=body)
 
     if res is not None:
-        return res.to_json(orient='records')
+        return res.to_dict(orient='records')
 
 
 if __name__ == '__main__':
     pd.options.display.max_columns = None
     body = ForecastRequestDTO(
-        model_name='KNeighborsRegressor_m_2',
+        model_name='LSTM_m_1',
         window_size=3
     )
 

@@ -23,7 +23,7 @@ def lstm():
     console.info(f'N_JOBS: {get_config("N_JOBS")}')
 
     grid_parameters = {
-        'model': ['a',  'b',  'c'],
+        'model': ['a', 'b'],
         'lr': [.001, .0001],
         'batch_size': [64],
         'epochs': [500],

@@ -63,7 +63,7 @@ Could not load dynamic library 'libcusolver.so.11'; dlerror: libcusolver.so.11: 
 False
 ```
 
-## Fix libcusolver.so.11 Error
+## Fix libcusolver.so.11 Error if use cuda 11.0
 
 check if have libcusolver.so.10 and libcusolver.so.11
 ```

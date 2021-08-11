@@ -44,10 +44,8 @@ _lag_m = [
     LagConfig(start=1, end=12, steps=1, column='ipca'),
 ]
 
-_key_1 = ['product_category_name', 'order_status']
-_key_2 = ['product_category_name',  'order_status', 'is_delayed']
-_key_3 = ['product_category_name', 'product_id', 'order_status', 'is_delayed', ]
-_key_4 = ['seller_state', 'product_category_name', 'product_id', 'order_status', 'is_delayed', ]
+_key_1 = ['product_category_name', 'order_status', 'is_delayed']
+_key_2 = ['product_category_name', 'product_id', 'order_status', 'is_delayed']
 
 _values = [
     'days_to_approve',
@@ -93,27 +91,6 @@ config_w_2 = FeatureConfigs(
 
 )
 
-config_w_3 = FeatureConfigs(
-    name='w_3',
-    agg_mode='w',
-    keys=_key_3,
-    values=_values,
-    date_column=_date_column,
-    target=_target_column,
-    lag_config=_lag_w
-
-)
-
-config_w_4 = FeatureConfigs(
-    name='w_4',
-    agg_mode='w',
-    keys=_key_4,
-    values=_values,
-    date_column=_date_column,
-    target=_target_column,
-    lag_config=_lag_w
-)
-
 config_m_1 = FeatureConfigs(
     name='m_1',
     agg_mode='m',
@@ -136,35 +113,9 @@ config_m_2 = FeatureConfigs(
 
 )
 
-config_m_3 = FeatureConfigs(
-    name='m_3',
-    agg_mode='m',
-    keys=_key_3,
-    values=_values,
-    date_column=_date_column,
-    target=_target_column,
-    lag_config=_lag_m
-
-)
-
-config_m_4 = FeatureConfigs(
-    name='m_4',
-    agg_mode='m',
-    keys=_key_4,
-    values=_values,
-    date_column=_date_column,
-    target=_target_column,
-    lag_config=_lag_m
-)
-
 config_list = [
     config_m_1,
     config_m_2,
     config_w_1,
     config_w_2,
-
-    config_m_3,
-    config_m_4,
-    config_w_3,
-    config_w_4,
 ]

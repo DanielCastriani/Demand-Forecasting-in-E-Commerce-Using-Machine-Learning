@@ -14,27 +14,17 @@ def config_b(input: Input):
     x = LSTM(128, return_sequences=True)(input)
     x = LSTM(128)(x)
     x = Dense(128, activation='relu')(x)
-    x = Dense(128, activation='relu')(x)
+    x = Dense(256, activation='relu')(x)
 
     return x
-
-
-def config_c(input: Input):
-    x = LSTM(256, return_sequences=True)(input)
-    x = LSTM(256)(x)
-    x = Dense(256, activation='relu')(x)
-    x = Dense(256, activation='relu')(x)
-    return x
-
 
 configs = {
     'a': config_a,
     'b': config_b,
-    'c': config_c,
 }
 
 
-def create_lstm_model(input_len: int, config: Literal['a', 'b', 'c'], lr: float):
+def create_lstm_model(input_len: int, config: Literal['a', 'b'], lr: float):
     hidden_layer = configs.get(config, config_a)
 
     input = Input(shape=(input_len, 1))

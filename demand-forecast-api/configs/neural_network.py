@@ -1,40 +1,96 @@
 from typing import Literal
-from tensorflow.keras.layers import Input, Dense
+from tensorflow.keras.layers import Input, Dense, Dropout
 from tensorflow.keras import Model
 from tensorflow.keras.optimizers import Adam
 
 
 def config_a(input: Input):
+
     x = Dense(64, activation='tanh')(input)
+    x = Dropout(0.2)(x)
+
     x = Dense(64, activation='tanh')(x)
+    x = Dropout(0.2)(x)
+
     x = Dense(128, activation='relu')(x)
+    x = Dropout(0.2)(x)
+
     x = Dense(128, activation='relu')(x)
+    x = Dropout(0.2)(x)
+
     return x
 
 
 def config_b(input: Input):
     x = Dense(128, activation='tanh')(input)
+
     x = Dense(128, activation='tanh')(x)
+    x = Dropout(0.2)(x)
+
     x = Dense(256, activation='relu')(x)
+    x = Dropout(0.2)(x)
+
     x = Dense(256, activation='relu')(x)
+    x = Dropout(0.2)(x)
+
     return x
 
 
 def config_c(input: Input):
     x = Dense(128, activation='tanh')(input)
+    x = Dropout(0.2)(x)
+
     x = Dense(128, activation='tanh')(x)
+    x = Dropout(0.2)(x)
+
     x = Dense(128, activation='tanh')(x)
+    x = Dropout(0.2)(x)
+
     x = Dense(128, activation='tanh')(x)
+    x = Dropout(0.2)(x)
+
     x = Dense(256, activation='relu')(x)
+    x = Dropout(0.2)(x)
+
     return x
 
 
 def config_d(input: Input):
+
     x = Dense(128, activation='tanh')(input)
+    x = Dropout(0.2)(x)
+
     x = Dense(128, activation='tanh')(x)
+    x = Dropout(0.2)(x)
+
     x = Dense(256, activation='tanh')(x)
+    x = Dropout(0.2)(x)
+
     x = Dense(256, activation='tanh')(x)
+    x = Dropout(0.2)(x)
+
     x = Dense(256, activation='relu')(x)
+    x = Dropout(0.2)(x)
+
+    return x
+
+
+def config_e(input: Input):
+    x = Dense(256, activation='tanh')(input)
+    x = Dropout(0.2)(x)
+
+    x = Dense(256, activation='tanh')(x)
+    x = Dropout(0.2)(x)
+
+    x = Dense(256, activation='tanh')(x)
+    x = Dropout(0.2)(x)
+
+    x = Dense(512, activation='tanh')(x)
+    x = Dropout(0.2)(x)
+
+    x = Dense(512, activation='relu')(x)
+    x = Dropout(0.2)(x)
+
     return x
 
 
@@ -43,6 +99,7 @@ configs = {
     'b': config_b,
     'c': config_c,
     'd': config_d,
+    'e': config_e,
 }
 
 

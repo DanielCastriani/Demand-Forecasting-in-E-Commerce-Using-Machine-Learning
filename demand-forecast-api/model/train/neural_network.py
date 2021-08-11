@@ -23,10 +23,10 @@ def train_neural_network():
     console.info(f'N_JOBS: {get_config("N_JOBS")}')
 
     grid_parameters = {
-        'model': ['a', 'b', 'c', 'd'],
+        'model': ['a', 'b', 'c', 'd', 'e'],
         'lr': [.0001, .00001],
         'batch_size': [64],
-        'epochs': [250],
+        'epochs': [300],
     }
 
     with timer(loggin_name='train', message_prefix=f'Train Neural Netwrok'):

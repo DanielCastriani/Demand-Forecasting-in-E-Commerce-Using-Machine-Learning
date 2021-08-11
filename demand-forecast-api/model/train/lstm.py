@@ -22,10 +22,10 @@ def lstm():
     console.info(f'N_JOBS: {get_config("N_JOBS")}')
 
     grid_parameters = {
-        'model': ['b', 'a'],
+        'model': ['a', 'b', 'c'],
         'lr': [.00001],
         'batch_size': [96],
-        'epochs': [250],
+        'epochs': [300],
     }
 
     with timer(loggin_name='train', message_prefix=f'LSTM') as console:

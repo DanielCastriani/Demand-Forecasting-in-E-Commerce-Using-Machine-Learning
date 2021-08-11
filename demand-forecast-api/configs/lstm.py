@@ -18,24 +18,25 @@ def config_a(input: Input):
     x = Dropout(0.2)(x)
 
     x = Dense(128, activation='relu')(x)
+    x = Dropout(0.2)(x)
 
     return x
 
 
 def config_b(input: Input):
     x = LSTM(96)(input)
-    x = Dropout(0.2)(x)
 
     x = Dense(128, activation='tanh')(x)
     x = Dropout(0.2)(x)
 
-    x = Dense(128, activation='tanh')(x)
+    x = Dense(256, activation='tanh')(x)
     x = Dropout(0.2)(x)
 
-    x = Dense(128, activation='relu')(x)
+    x = Dense(256, activation='tanh')(x)
     x = Dropout(0.2)(x)
 
-    x = Dense(128, activation='relu')(x)
+    x = Dense(256, activation='relu')(x)
+    x = Dropout(0.2)(x)
 
     return x
 

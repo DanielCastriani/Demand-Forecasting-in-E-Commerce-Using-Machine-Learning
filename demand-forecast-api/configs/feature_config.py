@@ -114,8 +114,8 @@ config_m_2 = FeatureConfigs(
 )
 
 config_list = [
-    config_m_1,
+    config_w_2,
     config_m_2,
     config_w_1,
-    config_w_2,
+    config_m_1,
 ]

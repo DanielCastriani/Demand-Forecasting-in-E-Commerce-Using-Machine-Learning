@@ -20,8 +20,10 @@ def split_train_test_timeseries(
 
     if verbose:
         total = len(dataset)
-        print(f'Train: {len(train)/total * 100:.3f}%')
-        print(f'Test: {len(test)/total * 100:.3f}%')
+        len_train = len(train)
+        len_test = len(test)
+        print(f'Train: {len_train/total * 100:.3f}%\t\t{len_train}')
+        print(f'Test: {len_test/total * 100:.3f}%\t\t{len_test}')
 
     return train.reset_index(drop=True), test.reset_index(drop=True)
 

@@ -1,12 +1,11 @@
 
 import tensorflow as tf
-
 from configs.feature_config import config_list
 from configs.lstm import create_lstm_model
 from configs.neural_network import create_neural_network_model
 from feature_engineering.make_features import make_features
 from tensorflow.keras import backend as K
-from tensorflow.keras.callbacks import TensorBoard
+from tensorflow.keras.callbacks import EarlyStopping, TensorBoard
 from utils.config_utils import get_config
 from utils.dataset_utils import load_dataset
 from utils.file_utils import create_path_if_not_exists
@@ -23,17 +22,17 @@ def lstm():
     console.info(f'N_JOBS: {get_config("N_JOBS")}')
 
     grid_parameters = {
-        'model': ['a', 'b'],
-        'lr': [.001, .0001],
-        'batch_size': [64],
-        'epochs': [500],
+        'model': ['b', 'a'],
+        'lr': [.00001],
+        'batch_size': [96],
+        'epochs': [250],
     }
 
     with timer(loggin_name='train', message_prefix=f'LSTM') as console:
-        console.info(f'\n\nGPU: {tf.test.is_gpu_available()}\n\n')
+        console.info(f'GPU: {tf.test.is_gpu_available()}')
         for config in config_list:
             model_name, model_path = create_model_folder(config, regressor_name='LSTM')
-            console.info(f'\n\n\n{model_name}')
+            console.info(f'{model_name}')
 
             with timer(loggin_name='train', message_prefix=f'train {model_name}'):
                 dataset = load_dataset()
@@ -60,12 +59,19 @@ def lstm():
                     log_dir=create_path_if_not_exists(model_path, 'tensorboard'),
                     write_graph=True)
 
+                early_stopping = EarlyStopping(
+                    monitor='loss',
+                    patience=15,
+                    min_delta=0.001,
+                    restore_best_weights=True
+                )
+
                 model = create_lstm_model(len(x_train.columns), config=best['model'], lr=best['lr'])
                 model.fit(
                     x_train, y_train, validation_data=(x_test, y_test),
                     batch_size=best['batch_size'],
                     epochs=best['epochs'],
-                    callbacks=[tensorboard_callback])
+                    callbacks=[tensorboard_callback, early_stopping])
 
                 model.save(create_path_if_not_exists(model_path, 'model'))
 

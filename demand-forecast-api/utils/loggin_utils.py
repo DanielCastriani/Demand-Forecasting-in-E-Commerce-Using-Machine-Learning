@@ -5,6 +5,37 @@ from utils.file_utils import create_path_if_not_exists
 from typehint import FileMode
 import contextlib
 
+import logging
+
+
+class CustomFormatter(logging.Formatter):
+    """Logging Formatter to add colors and count warning / errors"""
+
+    green = "\x1b[32;21m"
+    yellow = "\x1b[33;21m"
+    red = "\x1b[31;21m"
+    bold_red = "\x1b[31;1m"
+    reset = "\x1b[0m"
+    format = '%(asctime)s | %(levelname)s | %(message)s'
+
+    is_file = False
+
+    FORMATS = {
+        logging.DEBUG: green + format + reset,
+        logging.INFO: green + format + reset,
+        logging.WARNING: yellow + format + reset,
+        logging.ERROR: red + format + reset,
+        logging.CRITICAL: bold_red + format + reset
+    }
+
+    def format(self, record):
+        if self.is_file:
+            log_fmt = self.format
+        else:
+            log_fmt = self.FORMATS.get(record.levelno)
+        formatter = logging.Formatter(log_fmt)
+        return formatter.format(record)
+
 
 def create_loggin(path: str = 'logs', name='train', mode: FileMode = 'w', level: Any = logging.INFO):
     console = logging.getLogger(name)
@@ -17,20 +48,20 @@ def create_loggin(path: str = 'logs', name='train', mode: FileMode = 'w', level:
         console.handlers = []
 
     if len(console.handlers) == 0:
-        fmt = logging.Formatter('%(asctime)s | %(levelname)s | %(message)s')
+        fh_fmt = logging.Formatter('%(asctime)s | %(levelname)s | %(message)s')
 
         file_path = create_path_if_not_exists(path, filename=f'{name}.log')
         fh = logging.FileHandler(filename=file_path, mode=mode)
-        fh.setFormatter(fmt)
+        fh.setFormatter(fh_fmt)
         console.addHandler(fh)
 
         sh = logging.StreamHandler()
         sh.setLevel(level)
-        sh.setFormatter(fmt)
+        sh.setFormatter(CustomFormatter())
         console.addHandler(sh)
 
     console.setLevel(level)
-    
+
     return console
 
 

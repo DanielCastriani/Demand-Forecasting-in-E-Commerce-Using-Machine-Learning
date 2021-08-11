@@ -3,11 +3,12 @@
 import logging
 from itertools import product
 from time import time
-from typing import Any, Callable, Dict, List
+from typing import Any, Dict, List
 
 import numpy as np
 import pandas as pd
 from tensorflow.keras import backend as K
+from tensorflow.keras.callbacks import EarlyStopping
 from typehint.config_types import FeatureConfigs
 from typehint.model_types import KerasCreateModelCallback
 
@@ -98,7 +99,21 @@ def grid_search_keras(
 
         model = create_model_callback(input_size, config=config['model'], lr=config['lr'])
 
-        model.fit(x_train, y_train, batch_size=config['batch_size'], epochs=config['epochs'], verbose=False)
+        early_stopping = EarlyStopping(
+            monitor='loss',
+            patience=5,
+            min_delta=0.01,
+            restore_best_weights=True
+        )
+
+        model.fit(
+            x_train,
+            y_train,
+            batch_size=config['batch_size'],
+            epochs=config['epochs'],
+            callbacks=[early_stopping],
+            verbose=False)
+
         predict = model.predict(x_test)
 
         grid_search_report(y_test, console, total_iter, error_list, i, config, start, predict)

@@ -12,7 +12,7 @@ from utils.loggin_utils import get_loggin, timer
 from utils.model_utils import create_model_folder, grid_search_keras
 from utils.split_utils import split_pipeline
 
-from tensorflow.keras.callbacks import TensorBoard
+from tensorflow.keras.callbacks import TensorBoard, EarlyStopping
 from tensorflow.keras import backend as K
 
 
@@ -24,15 +24,15 @@ def train_neural_network():
 
     grid_parameters = {
         'model': ['a', 'b', 'c', 'd'],
-        'lr': [.01, .001, .0001],
+        'lr': [.0001, .00001],
         'batch_size': [64],
-        'epochs': [250, 500],
+        'epochs': [250],
     }
 
     with timer(loggin_name='train', message_prefix=f'Train Neural Netwrok'):
         for config in config_list:
             model_name, model_path = create_model_folder(config, regressor_name='NeuralNetwork')
-            console.info(f'\n\n\n{model_name}')
+            console.info(f'{model_name}\n\n')
 
             with timer(loggin_name='train', message_prefix=f'train {model_name}'):
                 dataset = load_dataset()
@@ -59,12 +59,19 @@ def train_neural_network():
                     log_dir=create_path_if_not_exists(model_path, 'tensorboard'),
                     write_graph=True)
 
+                early_stopping = EarlyStopping(
+                    monitor='loss',
+                    patience=15,
+                    min_delta=0.001,
+                    restore_best_weights=True
+                )
+
                 model = create_neural_network_model(len(x_train.columns), config=best['model'], lr=best['lr'])
                 model.fit(
                     x_train, y_train, validation_data=(x_test, y_test),
                     batch_size=best['batch_size'],
                     epochs=best['epochs'],
-                    callbacks=[tensorboard_callback])
+                    callbacks=[tensorboard_callback, early_stopping])
 
                 model.save(create_path_if_not_exists(model_path, 'model'))
 

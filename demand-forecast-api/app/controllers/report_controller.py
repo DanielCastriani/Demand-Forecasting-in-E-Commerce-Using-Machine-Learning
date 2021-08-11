@@ -1,4 +1,5 @@
 
+import numpy as np
 from app.controllers import model_controller
 from app.utils.df_utils import apply_filter, filter_df
 import json
@@ -42,6 +43,7 @@ def get_model_performance_report():
             df['AggregationMode'] = path['agg_mode']
             df['Granularity'] = ', '.join(path['keys'])
 
+
             df_list.append(df)
 
         report_df = pd.concat(df_list)
@@ -50,6 +52,10 @@ def get_model_performance_report():
         report_df = report_df.sort_values(['dataset', 'AggregationMode', 'mape'])
 
         report_df = report_df[['dataset', 'ModelType', 'Model', 'AggregationMode', 'mape', 'mae', 'Granularity']]
+
+        report_df['mape'] = report_df['mape'].apply(lambda x: f'{x:.3f}')
+        report_df['mae'] = report_df['mae'].apply(lambda x: f'{x:.3f}')
+
 
         report_dict = report_df.to_dict(orient='records')
 

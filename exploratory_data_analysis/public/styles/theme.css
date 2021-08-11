@@ -1,9 +1,11 @@
-.Select-control {
-    background: #00000000;
-    border: 0px;
-    border-bottom: 1px solid #fff;
+.Select-control, .Select {
+    background: #00000000 !important;
+    border: 0px !important;
+    border-bottom: 1px solid #fff !important;
     border-radius: 0px;
 }
+
+
 
 .Select.is-focused > .Select-control {
     background-color: #00000000;

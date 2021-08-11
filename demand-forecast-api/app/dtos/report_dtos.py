@@ -13,10 +13,13 @@ class ReportDTO(TypedDict):
     data: Dict
 
 
-class RequestReportDTO(TypedDict):
-    model_name: str
+class ReportFilter(TypedDict):
     is_delayed: Optional[Union[str, bool]]
     order_status: Optional[str]
     product_category_name: Optional[str]
     seller_id: Optional[str]
+
+
+class RequestReportDTO(ReportFilter):
+    model_name: str
     datatype: Optional[str]

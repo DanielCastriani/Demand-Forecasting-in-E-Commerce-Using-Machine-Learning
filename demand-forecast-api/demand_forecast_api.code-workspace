@@ -22,14 +22,16 @@
 			"**/data": false,
 			"**/bin": false,
 			"**/.venv": true,
+			"**/.bkp": true,
 		},
 		"files.watcherExclude": {
 			"**/.venv/*/**": true,
 			"**/.bin/*/**": true,
 			"**/.logs/*/**": true,
+			"**/.bkp/*/**": true,
 		},
 		"python.analysis.diagnosticMode": "openFilesOnly",
-		"python.analysis.typeCheckingMode": "basic",
+		"python.analysis.typeCheckingMode": "off",
 		"python.analysis.diagnosticSeverityOverrides": {
 			"reportGeneralTypeIssues": "none"
 		},

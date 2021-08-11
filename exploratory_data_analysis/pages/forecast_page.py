@@ -1,18 +1,17 @@
-from typing import Dict, List
-from utils.df_utils import concat_lines
-
 import dash_core_components as dcc
 import dash_html_components as html
-import pandas as pd
 import plotly.graph_objects as go
 from app import app
 from components.containers import Content, FilterContainer
 from components.dropdown import Dropdown
-from controllers import report_controller
+from components.slider import Slider
+from controllers import forecast_controller, report_controller
 from dash.dependencies import Input, Output
-from utils.filter_utils import forecast_filter, forecast_filter_fill_output, get_report_filter
+from dash_table import DataTable
+from utils.df_utils import concat_lines
+from utils.filter_utils import forecast_filter, forecast_filter_fill_output
 
-pg_id = 'train-report'
+pg_id = 'forecast-page'
 
 
 @app.callback(Output(f'{pg_id}-report-list', 'options'), Input('url', 'pathname'))
@@ -40,6 +39,9 @@ def on_load(_: str):
     Output(f'{pg_id}-seller-id', 'options'),
     Output(f'{pg_id}-type', 'options'),
 
+    Output(f'{pg_id}-report', 'columns'),
+    Output(f'{pg_id}-report', 'data'),
+
 ], [
     Input(f'{pg_id}-report-list', 'value'),
     Input(f'{pg_id}-is-delayed-div', 'className'),
@@ -54,6 +56,7 @@ def on_load(_: str):
     Input(f'{pg_id}-category', 'value'),
     Input(f'{pg_id}-seller-id', 'value'),
     Input(f'{pg_id}-type', 'value'),
+    Input(f'{pg_id}-window', 'value'),
 ])
 def uptate_report(
     model_name: str,
@@ -69,26 +72,33 @@ def uptate_report(
     seller_id: str,
     datatype: str,
 
+    window: int
+
 ):
     fig = go.Figure()
 
     fill_filters = model_name == -1
 
+    forecast_table_cols = []
+    forecast_table_data = []
+
     if not fill_filters:
-        success, df, filters = report_controller.get_report(
-            model_name,
-            is_delayed,
-            order_status,
-            product_category_name,
-            seller_id,
-            datatype,
+
+        success, df, filters = forecast_controller.make_forecast(
+            model_name=model_name,
+            is_delayed=is_delayed,
+            order_status=order_status,
+            product_category_name=product_category_name,
+            seller_id=seller_id,
+            datatype=datatype,
+            window_size=window
         )
 
         styles = []
         options = []
 
         if success:
-
+            fill_filters = False
             styles, options = forecast_filter(
                 is_delayed_classname,
                 order_status_classname,
@@ -99,17 +109,29 @@ def uptate_report(
                 styles,
                 options)
 
-            fig.add_trace(go.Scatter(x=df['date'], y=df['real'], name='Real', mode='lines'))
+            values = [c for c in df.columns if 'qty' in c]
+            df_plot = df.pivot_table(values, index=['type', 'date'], aggfunc='sum')
+            df_plot = df_plot.reset_index()
 
-            df = concat_lines(df)
+            df_plot = concat_lines(df_plot, g1='real', g2='forecast')
 
-            groups = list(enumerate(df.groupby('type')))
+            groups = list(enumerate(df_plot.groupby('type')))
             for i, group in groups:
                 g_info, df_g = group
-                fig.add_trace(go.Scatter(x=df_g['date'], y=df_g['predicted'], name=g_info.capitalize(), mode='lines'))
+                fig.add_trace(go.Scatter(x=df_g['date'], y=df_g['qty'], name=g_info.capitalize(), mode='lines'))
 
-        else:
-            fill_filters = True
+            forecast_table_cols = [{'name': c, 'id': c, 'presentation': 'markdown'} for c in df.columns]
+            forecast_table_data = df.to_dict(orient='records')
+
+            for item in forecast_table_data:
+                for i in range(1, len(values)):
+                    ca, cb = values[i-1], values[i]
+                    if item[ca] < item[cb]:
+                        item[ca] = f'![Decreased](public/img/chevron-down-solid.svg) {item[ca]}'
+                    elif item[ca] > item[cb]:
+                        item[ca] = f'![Increased](public/img/chevron-up-solid.svg) {item[ca]}'
+                    else:
+                        item[ca] = f'![Equal](public/img/equals-solid.svg) {item[ca]}'
 
     if fill_filters:
         styles, options = forecast_filter_fill_output(
@@ -121,18 +143,18 @@ def uptate_report(
 
     fig.update_layout(
         template='plotly_dark',
-        title="Treino/Test x Valor Real (soma)",
+        title="Previsão de Demanda (soma)",
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
         showlegend=True,
         transition={"duration": 300})
 
-    return [fig, *styles, *options]
+    return [fig, *styles, *options, forecast_table_cols, forecast_table_data]
+
 
 layout = html.Div([
     FilterContainer([
         Dropdown(id=f'{pg_id}-report-list', label='Modelo', value=-1, options=[], optionHeight=65),
-
         Dropdown(id=f'{pg_id}-is-delayed', label='Em atraso', value=-1, options=[], visible=False),
         Dropdown(id=f'{pg_id}-order-status', label='Status do pedido', value=-1, options=[], visible=False),
         Dropdown(id=f'{pg_id}-category', label='Categoria', value=-1, options=[], visible=False),
@@ -141,11 +163,28 @@ layout = html.Div([
     ]),
 
     Content([
+        Slider(id=f'{pg_id}-window', value=4, min=1, max=12),
         dcc.Graph(
             id=f'{pg_id}-chart',
             style={'width': '100%', 'height': '90%'},
+        ),
+
+
+        html.Div(
+
+            DataTable(
+                id=f'{pg_id}-report',
+                columns=[],
+                data=[],
+                filter_action="native",
+                sort_action="native",
+                sort_mode="multi",
+                page_action="native",
+                page_current=0,
+                page_size=20,
+                style_cell={'textAlign': 'left'},
+            ),
+            style={'margin': "32px 16px 88px 16px"}
         )
     ])
-
-    # Slider(id='slider', value=30, min=5, max=120)
 ],  className='content-container')

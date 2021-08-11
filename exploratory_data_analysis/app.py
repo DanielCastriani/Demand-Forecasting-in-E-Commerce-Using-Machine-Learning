@@ -8,7 +8,8 @@ external_stylesheets = [
     '/public/styles/menu.css',
     '/public/styles/base_style.css',
     '/public/styles/side_bar.css',
-    '/public/styles/table.css'
+    '/public/styles/table.css',
+    '/public/styles/loading.css',
 ]
 
 external_scripts = [

@@ -88,15 +88,31 @@ def mean_by_cat_date(agg_mode: AggregationMode, feature_column: str, category: s
     return sales_df
 
 
-def ext_data_x_feature(agg_mode: AggregationMode, feature_column: str, norm: bool):
+def ext_data_x_feature(agg_mode: AggregationMode, var_col: str, category: str, is_normalize: bool):
     sales_df = load_database()
-    columns = ['date', * keys, feature_column, 'dollar', 'ipca']
 
-    sales_df = sales_df[columns]
+    sales_df = filter_df(sales_df, 'product_category_name', category)
 
-    sales_df = aggregate(sales_df, agg_mode, keys, agg_func='mean', date_col='date')
+    sales_df = sales_df[['date', var_col, 'dollar', 'ipca']]
 
-    if norm:
-        sales_df = normalize(sales_df, columns=[feature_column, 'dollar', 'ipca'])
+    if var_col == 'qty':
+        sales_df_sum = aggregate(sales_df[['date', var_col]], agg_mode, [], agg_func='sum', date_col='date')
+        sales_df_sum = join_date(sales_df_sum, agg_mode=agg_mode)
 
-    return sales_df
+        sales_df_mean = aggregate(sales_df[['date', 'dollar', 'ipca']], agg_mode, [], agg_func='mean', date_col='date')
+        sales_df_mean = join_date(sales_df_mean, agg_mode=agg_mode)
+
+        sales_df_mean = sales_df_mean.merge(sales_df_sum, on=['date'])
+
+    else:
+        sales_df_mean = aggregate(sales_df, agg_mode, [], agg_func='mean', date_col='date')
+        sales_df_mean = join_date(sales_df_mean, agg_mode=agg_mode)
+
+
+    if is_normalize:
+        for col in [var_col, 'dollar', 'ipca']:
+            c_min = sales_df_mean[col].min()
+            d = sales_df_mean[col].max() - c_min
+            sales_df_mean[col] = (sales_df_mean[col] - c_min) / d
+
+    return sales_df_mean

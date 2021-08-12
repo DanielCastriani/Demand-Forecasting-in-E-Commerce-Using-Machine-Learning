@@ -12,5 +12,5 @@ def Checklist(id: str, options: List[ListItem], value: List[str] = [], horizonta
         options=options,
         value=value,
         labelStyle=labelStyle,
-        inputStyle={'marginRight': '8px'}
+        inputStyle={'marginRight': '8px'},
     )

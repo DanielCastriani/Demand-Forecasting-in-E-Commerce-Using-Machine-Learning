@@ -5,10 +5,13 @@ from app import app, categories
 from components.containers import Content, FilterContainer
 from components.dropdown import Dropdown
 from components.slider import Slider
+from components.theme import update_layout
 from controllers.database import load_numeric_column_names
 from controllers.variable_correlation_controller import lag_correlation
 from dash.dependencies import Input, Output
+from numpy.lib.shape_base import tile
 from utils.dropdown_utils import agg_mode_list, generate_list_items
+from utils.search_utils import find_label
 
 pg_id = 'lag-correlation'
 
@@ -39,14 +42,22 @@ def update_figure(agg_mode: str, feature_column: str, lag_feature_column: str, c
     )
 
     if feature_column == lag_feature_column:
+        lba = find_label(feature_column, numeric_columns)
+        title = f"Correlação Atrasada {lba}"
+
         feature_column = f'{feature_column}(A)'
         lag_feature_column = f'{lag_feature_column}(B)'
+    else:
+        lba = find_label(feature_column, numeric_columns)
+        lbb = find_label(lag_feature_column, categories_list_items)
+        title = f"Correlação Atrasada {lba} x {lbb}"
 
     fig = px.bar(corr, x=lag_feature_column, y=feature_column)
-    fig.update_layout(template='plotly_dark', title="Correlação Atrasada",
-                      paper_bgcolor='rgba(0,0,0,0)',
-                      plot_bgcolor='rgba(0,0,0,0)',
-                      transition={"duration": 300})
+
+    feature_label = find_label(category, categories_list_items)
+    title = title if category == -1 else f'{title} ({feature_label})'
+
+    update_layout(fig, title)
 
     return fig
 

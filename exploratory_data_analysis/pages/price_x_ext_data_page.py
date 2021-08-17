@@ -1,3 +1,5 @@
+from utils.search_utils import find_label
+from components.theme import update_layout
 from typing import List
 import dash_core_components as dcc
 import dash_html_components as html
@@ -41,13 +43,11 @@ def update_figure(agg_mode: str, var_col: str, category: str, compare_mode: List
     fig.add_trace(go.Scatter(x=df['date'], y=df['dollar'], name='Dollar', mode='lines'))
     fig.add_trace(go.Scatter(x=df['date'], y=df['ipca'], name='IPCA', mode='lines'))
 
-    fig.update_layout(
-        template='plotly_dark',
-        title=f"{var_col.title()}(média) x Dollar/IPCA",
-        paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(0,0,0,0)',
-        showlegend=True,
-        transition={"duration": 300})
+    feature_label = find_label(var_col, numeric_columns)
+
+    feature_label = f'{feature_label} (Média)' if feature_label != 'Qty' else f'{feature_label} (Soma)'
+
+    update_layout(fig, f"{feature_label} x Dollar/IPCA", showlegend=True)
 
     return fig
 

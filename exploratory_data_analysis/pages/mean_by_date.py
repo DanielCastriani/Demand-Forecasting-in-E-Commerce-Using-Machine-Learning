@@ -1,3 +1,5 @@
+from utils.search_utils import find_label
+from components.theme import update_layout
 from typing import List
 from components.checklist import Checklist
 from typehint.datatype import ListItem
@@ -24,7 +26,7 @@ categories_list_items = generate_list_items(categories, add_all=True)
 arr = [[i, el] for i, el in enumerate(numeric_columns) if el['value'] == 'qty']
 if len(arr):
     i, el = arr[0]
-    el['label'] = f"{el['label']} (Total)"
+    el['label'] = f"{el['label']}(Soma)"
     numeric_columns[i] = el
 
 
@@ -53,10 +55,10 @@ def update_figure(agg_mode: str, feature: str, category: str, compare_mode: List
     else:
         fig.add_trace(go.Scatter(x=df['date'], y=df[feature], name='', mode='lines', visible=True))
 
-    fig.update_layout(template='plotly_dark', title="Média por Data",
-                      paper_bgcolor='rgba(0,0,0,0)',
-                      plot_bgcolor='rgba(0,0,0,0)',
-                      showlegend=True)
+    title = find_label(feature, numeric_columns)
+    title = f"{title}(Média)" if feature != 'qty' else title
+    title = f"{title} por Data"
+    update_layout(fig, title, showlegend=True)
 
     return fig
 

@@ -1,3 +1,5 @@
+from utils.aggrecation_utils import aggregate, join_date
+from components.theme import update_layout
 import dash_core_components as dcc
 import dash_html_components as html
 import plotly.graph_objects as go
@@ -84,7 +86,7 @@ def uptate_report(
 
     if not fill_filters:
 
-        success, df, filters = forecast_controller.make_forecast(
+        success, df, filters, agg_mode = forecast_controller.make_forecast(
             model_name=model_name,
             is_delayed=is_delayed,
             order_status=order_status,
@@ -110,8 +112,14 @@ def uptate_report(
                 options)
 
             values = [c for c in df.columns if 'qty' in c]
-            df_plot = df.pivot_table(values, index=['type', 'date'], aggfunc='sum')
-            df_plot = df_plot.reset_index()
+            df_plot = aggregate(
+                df,
+                agg_mode=agg_mode,
+                keys=['type'],
+                agg_func='sum',
+                date_col='date')
+                
+            df_plot = join_date(df_plot, agg_mode)
 
             df_plot = concat_lines(df_plot, g1='real', g2='forecast')
 
@@ -141,13 +149,7 @@ def uptate_report(
             seller_id_classname,
             type_classname)
 
-    fig.update_layout(
-        template='plotly_dark',
-        title="Previsão de Demanda (soma)",
-        paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(0,0,0,0)',
-        showlegend=True,
-        transition={"duration": 300})
+    update_layout(fig, "Previsão de Demanda (soma)", showlegend=True)
 
     return [fig, *styles, *options, forecast_table_cols, forecast_table_data]
 

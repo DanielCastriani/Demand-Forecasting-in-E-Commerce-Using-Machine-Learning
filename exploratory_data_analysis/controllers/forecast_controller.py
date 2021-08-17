@@ -29,10 +29,14 @@ def make_forecast(
 
     if response['success']:
         body: ForecastResponseDTO = response['body']
+ 
         df = pd.DataFrame(body['result'])
-        filters = body['filter']
+        df['date'] = pd.to_datetime(df['date'])
 
-        return response['success'], df, filters
+        filters = body['filter']
+        agg_mode = body['agg_mode']
+
+        return response['success'], df, filters, agg_mode
 
     else:
         return response['success'], response.get('message', 'error making request'), None

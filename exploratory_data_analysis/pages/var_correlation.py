@@ -1,3 +1,5 @@
+from utils.search_utils import find_label
+from components.theme import update_layout
 import dash_core_components as dcc
 import dash_html_components as html
 import plotly.express as px
@@ -29,10 +31,12 @@ def update_figure(agg_mode: str, feature: str, category: str):
     corr = feature_correlation(agg_mode=agg_mode, feature=feature, category=category)
 
     fig = px.bar(corr, x='features', y=feature)
-    fig.update_layout(template='plotly_dark', title="Correlação entre Variáveis",
-                      paper_bgcolor='rgba(0,0,0,0)',
-                      plot_bgcolor='rgba(0,0,0,0)',
-                      transition={"duration": 300})
+
+    feature_label = find_label(feature, numeric_columns)
+
+    title = f"Correlação entre Variáveis x {feature_label}"
+
+    update_layout(fig, title, showlegend=True)
 
     return fig
 

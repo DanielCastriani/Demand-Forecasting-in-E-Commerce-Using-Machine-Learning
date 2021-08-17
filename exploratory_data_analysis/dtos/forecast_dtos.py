@@ -19,3 +19,4 @@ class ForecastRequestDTO(ReportFilter):
 class ForecastResponseDTO(TypedDict):
     result: Dict
     filter: Dict
+    agg_mode: str

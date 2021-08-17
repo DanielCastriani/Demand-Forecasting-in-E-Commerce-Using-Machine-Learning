@@ -1,3 +1,4 @@
+from components.theme import update_layout
 import dash_core_components as dcc
 import dash_html_components as html
 import plotly.graph_objects as go
@@ -36,12 +37,7 @@ def update_customer(agg: int):
     fig = go.Figure()
     fig.add_trace(go.Bar(x=df[col], y=df['customer_id']))
 
-    fig.update_layout(
-        template='plotly_dark',
-        title=title,
-        paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(0,0,0,0)',
-        transition={"duration": 300})
+    update_layout(fig, title)
 
     return fig
 
@@ -62,12 +58,7 @@ def update_seller(agg: int):
     fig = go.Figure()
     fig.add_trace(go.Bar(x=df[col], y=df['seller_id']))
 
-    fig.update_layout(
-        template='plotly_dark',
-        title=title,
-        paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(0,0,0,0)',
-        transition={"duration": 300})
+    update_layout(fig, title)
 
     return fig
 

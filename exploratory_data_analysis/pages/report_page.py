@@ -1,3 +1,4 @@
+from components.theme import update_layout
 from typing import Dict, List
 from utils.df_utils import concat_lines
 
@@ -117,17 +118,14 @@ def uptate_report(
             order_status_classname,
             product_category_name_classname,
             seller_id_classname,
+
             type_classname)
 
-    fig.update_layout(
-        template='plotly_dark',
-        title="Treino/Test x Valor Real (soma)",
-        paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(0,0,0,0)',
-        showlegend=True,
-        transition={"duration": 300})
+    title = "Treino/Test x Valor Real (soma)"
+    update_layout(fig, title, showlegend=True)
 
     return [fig, *styles, *options]
+
 
 layout = html.Div([
     FilterContainer([

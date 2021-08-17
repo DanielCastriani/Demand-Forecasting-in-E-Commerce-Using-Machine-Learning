@@ -19,7 +19,6 @@ def forecast(config: FeatureConfigs, dataset: pd.DataFrame, body: ForecastReques
     model = load_model(os.path.join(root_path, 'model.pickle'))
 
     forecast_dataset = dataset.copy()
-    lim_dates = forecast_dataset.groupby(keys)['date'].max()
 
     if model:
 
@@ -43,19 +42,17 @@ def forecast(config: FeatureConfigs, dataset: pd.DataFrame, body: ForecastReques
             y = model.predict(x)
 
             forecast_data[config['target']] = y
-            forecast_result.append(forecast_data)
+
+            index_list = [tuple(v) for v in forecast_data[[*keys, 'date']].values]
+            forecast_result = [*forecast_result, *index_list]
 
             forecast_dataset = pd.concat([forecast_dataset, forecast_data.copy(deep=True)])
             forecast_dataset = forecast_dataset.reset_index(drop=True)
 
-        def create_flag(df: pd.DataFrame):
-            lim = lim_dates[df.name]
-            df.loc[df['date'] >= lim, 'type'] = 'forecast'
-            df.loc[df['date'] < lim, 'type'] = 'real'
-
-            return df
-
-        forecast_dataset = forecast_dataset.groupby(keys).apply(create_flag)
+        forecast_dataset = forecast_dataset.set_index([*keys, 'date'])
+        forecast_dataset.loc[forecast_dataset.index.isin(forecast_result), 'type'] = 'forecast'
+        forecast_dataset['type'] = forecast_dataset['type'].fillna('real')
+        forecast_dataset = forecast_dataset.reset_index()
 
         forecast_dataset = forecast_dataset[['date', 'type', *config['keys'], config['target']]]
 
@@ -64,4 +61,4 @@ def forecast(config: FeatureConfigs, dataset: pd.DataFrame, body: ForecastReques
 
         forecast_dataset = forecast_dataset.fillna(0)
 
-        return forecast_dataset
+        return forecast_dataset, config['agg_mode']

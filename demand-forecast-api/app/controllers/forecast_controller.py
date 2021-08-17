@@ -15,13 +15,13 @@ def make_forecast(body: ForecastRequestDTO):
 
     dataset = apply_filter(body, dataset)
 
-    result_df = forecast(config=config, dataset=dataset, body=body)
+    result_df, agg_mode = forecast(config=config, dataset=dataset, body=body)
 
 
     if result_df is not None:
         result_df['date'] = result_df['date'].apply(lambda s: s.strftime('%Y-%m-%d'))
         result_dict = result_df.to_dict(orient='records')
-        return result_dict, filters
+        return result_dict, filters, agg_mode
 
     return None, None
 

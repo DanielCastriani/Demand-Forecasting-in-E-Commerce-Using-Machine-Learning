@@ -1,5 +1,6 @@
 
 
+from datetime import datetime
 import pandas as pd
 from feature_engineering.make_features import make_features
 from typehint.config_types import FeatureConfigs
@@ -19,8 +20,13 @@ def prepare_data_forecast(config: FeatureConfigs, forecast_dataset: pd.DataFrame
     if config['agg_mode'] == 'm':
         forecast_data['date'] = max_date + pd.Timedelta(days=32)
         forecast_data['date'] = forecast_data['date'].apply(lambda dt: pd.to_datetime(f'{dt.year}-{dt.month}-1'))
+
     elif config['agg_mode'] == 'w':
-        forecast_data['date'] = max_date + pd.Timedelta(days=15)
+        forecast_data['date'] = max_date + pd.Timedelta(days=7)
+        forecast_data['date'] = forecast_data['date'].apply(
+            lambda dt: datetime.strptime(f"{dt.year}-{dt.week}-0", '%Y-%W-%w')
+        )
+
     else:
         forecast_data['date'] = max_date + pd.Timedelta(days=1)
 

@@ -12,14 +12,14 @@ def forecast():
 
     body: ForecastRequestDTO = flask.request.get_json()
 
-    result, filter = forecast_controller.make_forecast(body)
+    result, filter, agg_mode = forecast_controller.make_forecast(body)
 
     success = True if result is not None else False
     msg = '' if success else 'Erro while process data'
 
     body = None
     if success:
-        body = ForecastResponseDTO(result=result, filter=filter)
+        body = ForecastResponseDTO(result=result, filter=filter, agg_mode=agg_mode)
 
     response = HTTPResponseDTO(body=body, success=success, message=msg)
 

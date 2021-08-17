@@ -39,7 +39,7 @@ def join_date(df: pd.DataFrame, agg_mode: AggregationMode, column_name='date', i
         elif agg_mode == 'm':
             return datetime(year=int(s['y']), month=int(s['m']), day=1)
         elif agg_mode == 'w':
-            return datetime.strptime(f"{int(s['y'])}-{int(s['w']) - 1}-0", '%Y-%W-%w')
+            return datetime.strptime(f"{int(s['y'])}-{int(s['w'])}-0", '%Y-%W-%w')
         else:
             return datetime(year=s['y'], month=s['m'], day=s['d'])
 

@@ -59,3 +59,6 @@ categories = products.select(products.product_category_name).distinct()
 categories = categories.dropna(subset=['product_category_name'])
 
 categories.repartition(1).write.mode('overwrite').parquet(hdfs_path.format('categories.parquet'))
+
+
+print(f'{dataset.count()} rows')

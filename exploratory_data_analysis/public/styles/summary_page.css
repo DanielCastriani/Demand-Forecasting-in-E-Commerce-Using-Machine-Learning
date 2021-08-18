@@ -1,0 +1,11 @@
+.summary-chart-row {
+    height: 40em;
+    margin-bottom: 2em;
+}
+
+.summary-info-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 8px;
+}

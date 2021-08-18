@@ -7,7 +7,6 @@ def update_layout(fig: Figure, title: str, font_size: int = 18, showlegend: bool
         title=title,
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
-        transition={"duration": 300},
         font=dict(
             size=font_size,
         ),

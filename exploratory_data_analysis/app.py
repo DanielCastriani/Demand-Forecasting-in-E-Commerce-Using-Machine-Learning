@@ -10,6 +10,8 @@ external_stylesheets = [
     '/public/styles/side_bar.css',
     '/public/styles/table.css',
     '/public/styles/loading.css',
+    '/public/styles/summary_page.css',
+    '/public/styles/card.css',    
 ]
 
 external_scripts = [

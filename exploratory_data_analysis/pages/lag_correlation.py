@@ -49,7 +49,7 @@ def update_figure(agg_mode: str, feature_column: str, lag_feature_column: str, c
         lag_feature_column = f'{lag_feature_column}(B)'
     else:
         lba = find_label(feature_column, numeric_columns)
-        lbb = find_label(lag_feature_column, categories_list_items)
+        lbb = find_label(lag_feature_column, numeric_columns)
         title = f"Correlação Atrasada {lba} x {lbb}"
 
     fig = px.bar(corr, x=lag_feature_column, y=feature_column)

@@ -1,4 +1,5 @@
 import os
+import numpy as np
 
 import pandas as pd
 from app.dtos.forecast_dtos import ForecastRequestDTO
@@ -20,9 +21,13 @@ def forecast(config: FeatureConfigs, dataset: pd.DataFrame, body: ForecastReques
 
     forecast_dataset = dataset.copy()
 
+    max_qty = np.percentile(dataset['qty'], 95)
+
+    real_date = dataset['date'].max()
+
     if model:
 
-        forecast_result = []
+        # forecast_result = []
 
         while window > 0:
             window -= 1
@@ -41,18 +46,24 @@ def forecast(config: FeatureConfigs, dataset: pd.DataFrame, body: ForecastReques
 
             y = model.predict(x)
 
-            forecast_data[config['target']] = y
+            if 'product_id' in keys:
+                y[y > max_qty] = max_qty
 
-            index_list = [tuple(v) for v in forecast_data[[*keys, 'date']].values]
-            forecast_result = [*forecast_result, *index_list]
+            forecast_data[config['target']] = y
+            forecast_data[config['target']].astype(int)
+
+            # index_list = [tuple(v) for v in forecast_data[[*keys, 'date']].values]
+            # forecast_result = [*forecast_result, *index_list]
 
             forecast_dataset = pd.concat([forecast_dataset, forecast_data.copy(deep=True)])
             forecast_dataset = forecast_dataset.reset_index(drop=True)
 
-        forecast_dataset = forecast_dataset.set_index([*keys, 'date'])
-        forecast_dataset.loc[forecast_dataset.index.isin(forecast_result), 'type'] = 'forecast'
-        forecast_dataset['type'] = forecast_dataset['type'].fillna('real')
-        forecast_dataset = forecast_dataset.reset_index()
+        # forecast_dataset = forecast_dataset.set_index([*keys, 'date'])
+        # forecast_dataset.loc[forecast_dataset.index.isin(forecast_result), 'type'] = 'forecast'
+        # forecast_dataset['type'] = forecast_dataset['type'].fillna('real')
+
+        forecast_dataset.loc[forecast_dataset['date'] > real_date, 'type'] = 'forecast'
+        forecast_dataset.loc[forecast_dataset['type'].isna(), 'type'] = 'real'
 
         forecast_dataset = forecast_dataset[['date', 'type', *config['keys'], config['target']]]
 
@@ -60,5 +71,12 @@ def forecast(config: FeatureConfigs, dataset: pd.DataFrame, body: ForecastReques
             forecast_dataset[f"{config['target']}_{i*-1}"] = forecast_dataset.groupby(config['keys'])[config['target']].shift(i)
 
         forecast_dataset = forecast_dataset.fillna(0)
+
+        if 'LSTM' in model_name or 'NeuralNetwork' in model_name:
+            print('dealocate')
+            from tensorflow.keras import backend as K
+
+            del model
+            K.clear_session()
 
         return forecast_dataset, config['agg_mode']

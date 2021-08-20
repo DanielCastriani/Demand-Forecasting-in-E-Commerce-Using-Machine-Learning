@@ -8,7 +8,7 @@ from typehint.config_types import FeatureConfigs
 
 def prepare_data_forecast(config: FeatureConfigs, forecast_dataset: pd.DataFrame):
 
-    filter_date = forecast_dataset['date'] >= forecast_dataset['date'].max() - pd.Timedelta(days=395)
+    filter_date = forecast_dataset['date'] >= forecast_dataset['date'].max() - pd.Timedelta(days=365)
     forecast_dataset = forecast_dataset[filter_date]
 
     forecast_dataset, numeric_cols = make_features(forecast_dataset, config)
